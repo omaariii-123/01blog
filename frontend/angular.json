@@ -19,7 +19,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
+
               }
+			  {
+  				"glob": "**/*.png",
+  				"input": "src/assets/images",
+  				"output": "/assets/images"
+			  }
+
             ],
             "styles": [
               "src/styles.css"
@@ -86,5 +93,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
