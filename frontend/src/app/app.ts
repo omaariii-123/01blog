@@ -4,10 +4,11 @@ import {AuthService} from './services/auth.service';
 import {NavigationService} from './services/nav.service';
 import { CommonModule } from '@angular/common';
 import {Router} from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, HttpClientModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

@@ -4,10 +4,10 @@
 		<a (click)="goHome()" class="mdl-layout-title">01 Blog</a>
 <div class="mdl-layout-spacer"></div>
 <nav class="mdl-navigation mdl-layout--large-screen-only">
-<a (click)="goLogin()" *ngIf="!auth.isLoggedIn()" class="mdl-navigation__link">Sign in</a>
-<a (click)="goSignUp()"*ngIf="!auth.isLoggedIn()" class="mdl-navigation__link">Sign up</a>
-<a *ngIf="auth.isLoggedIn()" class="mdl-navigation__link">Profile</a>
-<a *ngIf="auth.isLoggedIn()" class="mdl-navigation__link">Log out</a>
+<button (click)="goLogin()" *ngIf="!auth.isLoggedIn()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Sign in</button>
+<button (click)="goSignUp()"*ngIf="!auth.isLoggedIn()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Sign up</button>
+<button *ngIf="auth.isLoggedIn()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Profile</button>
+<button *ngIf="auth.isLoggedIn()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Log out</button>
 </nav>
 </div>
 </header>

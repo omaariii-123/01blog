@@ -1,8 +1,11 @@
 /home/yomari/01blog/backend/src/main/java/myapp/Main.java
+/home/yomari/01blog/backend/src/main/java/myapp/config/SecurityConfig.java
 /home/yomari/01blog/backend/src/main/java/myapp/controller/UserController.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/Comment.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/Like.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/Post.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/User.java
+/home/yomari/01blog/backend/src/main/java/myapp/model/UserDto.java
 /home/yomari/01blog/backend/src/main/java/myapp/repository/UserRepository.java
 /home/yomari/01blog/backend/src/main/java/myapp/service/UserService.java
+/home/yomari/01blog/backend/src/main/java/myapp/service/UsrDetailsService.java

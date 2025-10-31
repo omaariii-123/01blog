@@ -1,17 +1,17 @@
 <div class="auth-container">
   <h2>Login</h2>
-  <form>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" ngModel required placeholder="Enter your email" />
+      <input formControlName="email" type="email" id="email" name="email" required placeholder="Enter your email" />
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" ngModel required placeholder="Enter your password" />
+      <input formControlName="password" type="password" id="password" name="password" required placeholder="Enter your password" />
     </div>
 
-    <button type="submit">Login</button>
+    <button [disabled]="!formValid()" type="submit">Login</button>
   </form>
 
   <p class="auth-footer">

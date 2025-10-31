@@ -1,5 +1,8 @@
+myapp/service/UserService.class
+myapp/service/UsrDetailsService.class
+myapp/repository/UserRepository.class
+myapp/config/SecurityConfig.class
 myapp/Main.class
 myapp/model/User.class
-myapp/service/UserService.class
+myapp/model/UserDto.class
 myapp/controller/UserController.class
-myapp/repository/UserRepository.class

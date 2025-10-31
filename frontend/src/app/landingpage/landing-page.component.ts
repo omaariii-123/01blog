@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-
+import {NavigationService} from '../services/nav.service';
 
 @Component({
 	selector: 'app-landing-page',
@@ -8,4 +8,8 @@ import {Component} from '@angular/core';
 })
 
 export class LandingPage {
+	constructor(public nav : NavigationService) {}
+	goRegister(){
+		this.nav.goToSignup();
+	}
 }

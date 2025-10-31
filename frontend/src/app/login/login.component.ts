@@ -1,16 +1,33 @@
-import { Component } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {NavigationService} from '../services/nav.service';
-
+import {AuthService} from '../services/auth.service';
+import {Component, input} from '@angular/core';
+import {FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import {User} from '../user/user.model';
 @Component({
   selector: 'app-login',
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class Login {
-	constructor(public nav: NavigationService){}
+	loginForm = new FormGroup({
+		email : new FormControl('', [Validators.required, Validators.email]),
+		password : new FormControl('',[Validators.required, Validators.minLength(8)]),
+	})
+	constructor(public nav: NavigationService, private auth: AuthService){}
 	goRegister() {
-		this.nav.goToSignup()
+		this.nav.goToSignup();
+	}
+	formValid(){
+		return !this.loginForm.invalid;
+	}
+	onSubmit(){
+		let usr : User = {
+			name :  '',
+			email : this.loginForm.get("email")?.value || '',
+			password : this.loginForm.get("password")?.value || '',
+		};
+		this.auth.login(usr);
 	}
 }
