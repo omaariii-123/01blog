@@ -19,11 +19,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-
+import org.springframework.http.HttpMethod;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.http.HttpStatus;
+import myapp.model.UserDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.userdetails.UserDetails;
+import myapp.model.MyUserDetails;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -31,18 +39,21 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+					HttpMethod.POST,
                     "/api/users/register",
                     "/api/users/login"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin().loginProcessingUrl("/api/users/login") // your API login
-        .successHandler((req, res, auth) -> res.setStatus(HttpServletResponse.SC_OK))
-        .failureHandler((req, res, ex) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-    	.and()
+            .formLogin().loginProcessingUrl("/api/users/login").usernameParameter("email").successHandler(authenticationSuccessHandler()).failureHandler(authenticationFailureHandler())
+			.and()
          .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-           );
+           )
+		 .exceptionHandling(exceptions -> exceptions
+                 // Use a 401 response instead of redirecting to a login page
+                .authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED))
+            );
 		return http.build();
     }
 
@@ -59,7 +70,7 @@ public class SecurityConfig {
 @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // your frontend
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -67,5 +78,26 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+ @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+			MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
+            response.setStatus(HttpStatus.OK.value());
+			UserDto userd = new UserDto();
+			userd.setName(user.getName());
+			userd.setEmail(user.getEmail());
+			response.getWriter().write(objectMapper.writeValueAsString(userd));
+			response.getWriter().flush();
+			
+        };
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return (request, response, exception) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("Authentication failed: " + exception.getMessage());
+        };
     }
 }

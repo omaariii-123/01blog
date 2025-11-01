@@ -3,6 +3,7 @@
 /home/yomari/01blog/backend/src/main/java/myapp/controller/UserController.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/Comment.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/Like.java
+/home/yomari/01blog/backend/src/main/java/myapp/model/MyUserDetails.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/Post.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/User.java
 /home/yomari/01blog/backend/src/main/java/myapp/model/UserDto.java

@@ -1,6 +1,7 @@
 package myapp.service;
 
 import myapp.model.User;
+import myapp.model.MyUserDetails;
 import myapp.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,12 +22,8 @@ public class UsrDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return org.springframework.security.core.userdetails.User
-            .withUsername(user.getEmail())
-            .password(user.getPassword())
-            .roles("USER") // or ADMIN
-            .build();
+		var userd = new MyUserDetails(user.getName(), user.getEmail(), user.getPassword(), null);
+        return userd;
     }
 }
 

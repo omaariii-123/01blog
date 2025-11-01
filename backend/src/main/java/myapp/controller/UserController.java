@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import myapp.model.UserDto;
 import java.util.List;
+import myapp.config.SecurityConfig;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
@@ -17,8 +18,10 @@ public class UserController{
 	
 	@PostMapping("/register")
 	public ResponseEntity<User> createUser(@RequestBody UserDto user){
+		user.setPassword(this.userService.encodePassword(user.getPassword()));
 		User usr = userService.saveUser(user);
 		usr.setPassword("");
+
 		return ResponseEntity.ok(usr);
 	}/*
 	@PostMapping("/login")

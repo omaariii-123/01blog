@@ -5,4 +5,5 @@ myapp/config/SecurityConfig.class
 myapp/Main.class
 myapp/model/User.class
 myapp/model/UserDto.class
+myapp/model/MyUserDetails.class
 myapp/controller/UserController.class
