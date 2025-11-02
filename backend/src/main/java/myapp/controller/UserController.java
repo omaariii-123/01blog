@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import myapp.model.UserDto;
 import java.util.List;
 import myapp.config.SecurityConfig;
+import java.security.Principal;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
@@ -36,6 +37,18 @@ public class UserController{
 		return ResponseEntity.ok(user);
 
 	}*/
+	@GetMapping("/status")
+	public ResponseEntity<?> checkStatus(Principal principal) {
+			if (principal != null) {
+			User user = userService.login(principal.getName());
+			UserDto userd = new UserDto();
+			user.setName(user.getName());
+			user.setEmail(user.getEmail());
+			return ResponseEntity.ok(userd);
+			} 
+			return ResponseEntity.status(403).body("!!!");
+	}
+
 	@GetMapping
 	public List<User> listUsers(){
 		return userService.getAllUsers();

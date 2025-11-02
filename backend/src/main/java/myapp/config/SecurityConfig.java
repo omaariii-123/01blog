@@ -27,6 +27,13 @@ import myapp.model.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import myapp.model.MyUserDetails;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +45,7 @@ public class SecurityConfig {
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+				.requestMatchers("/api/users/status").authenticated()
                 .requestMatchers(
 					HttpMethod.POST,
                     "/api/users/register",
@@ -50,6 +58,16 @@ public class SecurityConfig {
          .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
            )
+		 .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")) // Use POST method for logout
+                .invalidateHttpSession(true) // Invalidate the server-side session (deletes the context)
+                .deleteCookies("JSESSIONID") // Explicitly tells the browser to clear the cookie
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)) // Return 200 OK status
+				 .logoutSuccessHandler((request, response, authentication) -> {
+        System.out.println("--- LOGOUT SUCCESS HANDLER EXECUTED ---");
+        response.setStatus(HttpServletResponse.SC_OK);
+    })
+            )
 		 .exceptionHandling(exceptions -> exceptions
                  // Use a 401 response instead of redirecting to a login page
                 .authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED))

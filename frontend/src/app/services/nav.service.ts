@@ -11,6 +11,6 @@ export class NavigationService {
     this.router.navigate(['/register']);
   }
   goToHome() {
-  	this.router.navigate(['']);
+  	this.router.navigate(['/dash']);
   }
 }

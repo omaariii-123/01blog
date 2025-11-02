@@ -3,27 +3,35 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {User} from '../user/user.model';
 import {NavigationService} from '../services/nav.service'
+import {BehaviorSubject, catchError, tap, of} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  	user = signal<boolean | null>(null);
+  	user = signal<{name: String, email: String} | null | undefined>(undefined);
     constructor(private http: HttpClient, private nav: NavigationService) {}
+	checkStatus(){
+		return this.http.get("http://localhost:8080/api/users/status", {withCredentials: true} ).pipe(
+			tap((user: any) => {
+				this.user.set(user);
+			}),
+			catchError((err) => {
+				console.log(err.message);
+				return of(null);
+			}
+		));
+	}
 	register(user : User) {
-		let res : boolean = false;
-		try {
 		this.http.post<User>('http://localhost:8080/api/users/register', user).subscribe({
 			next : (response) => {
-					console.log(response);
 					this.nav.goToLogin();
+			},
+			error: (err) => {
+				console.log(err.message);
 			}		
 		});
 		
-		}catch (err) {
-				console.log(err);
-		}
 	}
    login(user: User) {
-	try {
 		const headers = new HttpHeaders({
       		'Content-Type': 'application/x-www-form-urlencoded'
     	});
@@ -32,25 +40,24 @@ export class AuthService {
 		body.set('password', user.password);
 	 this.http.post<User>('http://localhost:8080/api/users/login', body, { headers , withCredentials: true }).subscribe({
 			next : (response) => {
-					console.log(response);
-					this.user.set(true);
+					this.user.set(user);
 					this.nav.goToHome();
+			},
+			error: (err) => {
+				console.log(err.message);
 			}
+
 		});
-
-	}catch(err) {
-		console.log(err);
-	}
-
-	
   }
-
   logout() {
-    this.user.set(null);
-  }
-
-  isLoggedIn() {
-    return this.user();
+	this.http.post('http://localhost:8080/logout', { withCredentials: true }).subscribe({
+		next : () => {
+			this.user.set(null);
+		},
+		error : (err) => {
+			console.log(err.message);
+		}
+	});
   }
 }
 
