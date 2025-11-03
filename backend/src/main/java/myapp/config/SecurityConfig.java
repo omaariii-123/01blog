@@ -32,6 +32,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 
 
@@ -59,17 +66,13 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
            )
 		 .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")) // Use POST method for logout
-                .invalidateHttpSession(true) // Invalidate the server-side session (deletes the context)
-                .deleteCookies("JSESSIONID") // Explicitly tells the browser to clear the cookie
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)) // Return 200 OK status
-				 .logoutSuccessHandler((request, response, authentication) -> {
-        System.out.println("--- LOGOUT SUCCESS HANDLER EXECUTED ---");
-        response.setStatus(HttpServletResponse.SC_OK);
-    })
-            )
+    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+    .invalidateHttpSession(true)
+    .clearAuthentication(true)
+    .deleteCookies("JSESSIONID")
+	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+)
 		 .exceptionHandling(exceptions -> exceptions
-                 // Use a 401 response instead of redirecting to a login page
                 .authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED))
             );
 		return http.build();

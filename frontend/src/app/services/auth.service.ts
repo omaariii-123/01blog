@@ -12,7 +12,8 @@ export class AuthService {
 	checkStatus(){
 		return this.http.get("http://localhost:8080/api/users/status", {withCredentials: true} ).pipe(
 			tap((user: any) => {
-				this.user.set(user);
+					console.log(user);
+				this.user.set({name: user.name, email: user.email});
 			}),
 			catchError((err) => {
 				console.log(err.message);
@@ -39,7 +40,7 @@ export class AuthService {
 		body.set('email', user.email);
 		body.set('password', user.password);
 	 this.http.post<User>('http://localhost:8080/api/users/login', body, { headers , withCredentials: true }).subscribe({
-			next : (response) => {
+			next : (user) => {
 					this.user.set(user);
 					this.nav.goToHome();
 			},
@@ -50,9 +51,11 @@ export class AuthService {
 		});
   }
   logout() {
-	this.http.post('http://localhost:8080/logout', { withCredentials: true }).subscribe({
-		next : () => {
+	this.http.post('http://localhost:8080/logout',{},{ withCredentials: true }).subscribe({
+		next : (res) => {
+			console.log(res);
 			this.user.set(null);
+			this.nav.goToLogin();
 		},
 		error : (err) => {
 			console.log(err.message);

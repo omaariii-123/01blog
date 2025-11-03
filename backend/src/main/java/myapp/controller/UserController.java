@@ -9,9 +9,15 @@ import myapp.model.UserDto;
 import java.util.List;
 import myapp.config.SecurityConfig;
 import java.security.Principal;
+import org.springframework.security.core.Authentication;
+import myapp.model.MyUserDetails;
+import jakarta.servlet.http.Cookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+
+
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 public class UserController{
@@ -25,29 +31,33 @@ public class UserController{
 
 		return ResponseEntity.ok(usr);
 	}/*
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody UserDto usr){
-		User user = userService.login(usr.getEmail());
-		if (user == null){
-			return ResponseEntity.status(404).body("user not found !");
-		}else if (!user.getPassword().equals(usr.getPassword())) {
-			return ResponseEntity.status(401).body("invalide Password or Email !");
-		}
-		user.setPassword("");
-		return ResponseEntity.ok(user);
+	@PostMapping("/logout")
+	public ResponseEntity<?> login(){
 
+    ResponseCookie cookie = ResponseCookie.from("myCookieName", "myCookieValue")
+        .httpOnly(true)
+                .secure(false) // <--- Set to FALSE for HTTP connections
+                .path("/")
+                .maxAge(360000) // Set maxAge to 0 to expire the cookie immediately
+                .sameSite("None") // Explicitly set to Lax, or just omit this line
+                .build();		
+
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("test");
 	}*/
 	@GetMapping("/status")
-	public ResponseEntity<?> checkStatus(Principal principal) {
-			if (principal != null) {
-			User user = userService.login(principal.getName());
-			UserDto userd = new UserDto();
-			user.setName(user.getName());
-			user.setEmail(user.getEmail());
-			return ResponseEntity.ok(userd);
-			} 
-			return ResponseEntity.status(403).body("!!!");
+	public ResponseEntity<?> checkStatus(Authentication authentication) {
+			if (authentication == null || !authentication.isAuthenticated()|| authentication.getPrincipal().equals("anonymousUser")) {
+				return ResponseEntity.status(403).body("!!!");	
+			}
+				MyUserDetails principal = (MyUserDetails) authentication.getPrincipal();
+				System.out.println(principal.getName());
+				User user = userService.login(principal.getEmail());
+				UserDto userd = new UserDto();
+				userd.setName(user.getName());
+				userd.setEmail(user.getEmail());
+				return ResponseEntity.ok(userd);
 	}
+
 
 	@GetMapping
 	public List<User> listUsers(){

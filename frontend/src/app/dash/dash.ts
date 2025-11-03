@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-dash',
@@ -7,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './dash.css'
 })
 export class Dash {
-	
+	auth = inject(AuthService);
+	name = this.auth.user()?.name;
 }
