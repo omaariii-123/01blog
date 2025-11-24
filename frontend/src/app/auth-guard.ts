@@ -3,5 +3,9 @@ import {inject} from '@angular/core';
 import {AuthService} from './services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-	return !inject(AuthService).user();
+	let auth = inject(AuthService);
+	if (auth.state() == null) {
+		return false;
+	}
+	return true;
 };

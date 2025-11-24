@@ -8,9 +8,9 @@ import {loginGuard} from './login-guard';
 
 export const routes: Routes = [
   { path: '', component: LandingPage },
-  { path: 'dash', component: Dash, canActivate: [loginGuard]},
-  { path: 'login', component: Login, canActivate: [authGuard]},
-  { path: 'register', component: Register , canActivate: [authGuard]},
+  { path: 'dash', component: Dash, canActivate: [authGuard]},
+  { path: 'login', component: Login, canActivate: [loginGuard]},
+  { path: 'register', component: Register , canActivate: [loginGuard]},
   { path: '**', redirectTo: '' } // fallback
 ];
 

@@ -3,5 +3,10 @@ import {inject} from '@angular/core';
 import {AuthService} from './services/auth.service';
 
 export const loginGuard: CanActivateFn = (route, state) => {
-  return !!inject(AuthService).user();
+  	let auth = inject(AuthService);
+	console.log(auth.state())
+	if (auth.state() == null) {
+		return true;
+	}
+	return false;
 };

@@ -1,14 +1,23 @@
-// auth.service.ts
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, effect, computed} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {User} from '../user/user.model';
 import {NavigationService} from '../services/nav.service'
-import {BehaviorSubject, catchError, tap, of} from 'rxjs';
+import {catchError, tap, of} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   	user = signal<{name: String, email: String} | null | undefined>(undefined);
-    constructor(private http: HttpClient, private nav: NavigationService) {}
+	state = computed(()=> this.user());
+
+    constructor(private http: HttpClient, private nav: NavigationService) {
+		effect(()=> {
+			if (this.state() === null) {
+				this.nav.goToLogin();
+			}else if (this.state() === undefined){
+				this.nav.goTo();
+			}
+		})
+	}
 	checkStatus(){
 		return this.http.get("http://localhost:8080/api/users/status", {withCredentials: true} ).pipe(
 			tap((user: any) => {
@@ -55,7 +64,6 @@ export class AuthService {
 		next : (res) => {
 			console.log(res);
 			this.user.set(null);
-			this.nav.goToLogin();
 		},
 		error : (err) => {
 			console.log(err.message);
