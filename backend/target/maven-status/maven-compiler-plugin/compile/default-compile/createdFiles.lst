@@ -1,9 +1,13 @@
-myapp/service/UserService.class
+myapp/repository/PostRepository.class
 myapp/service/UsrDetailsService.class
-myapp/repository/UserRepository.class
-myapp/config/SecurityConfig.class
 myapp/Main.class
 myapp/model/User.class
-myapp/model/UserDto.class
 myapp/model/MyUserDetails.class
+myapp/model/Post.class
+myapp/controller/PostController.class
+myapp/service/UserService.class
+myapp/repository/UserRepository.class
+myapp/config/SecurityConfig.class
+myapp/model/UserDto.class
 myapp/controller/UserController.class
+myapp/service/PostService.class

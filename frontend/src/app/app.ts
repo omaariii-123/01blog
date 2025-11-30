@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {AuthService} from './services/auth.service';
-import {NavigationService} from './services/nav.service';
+import {AuthService} from './core/auth/auth.service';
+import {NavigationService} from './core/nav/nav.service';
 import { CommonModule } from '@angular/common';
 import {Router} from '@angular/router';
 

@@ -1,15 +1,16 @@
 package myapp.model;
 
-import jakarta.presistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@table(name="posts")
+@Table(name = "posts")
 @Data
 @NoArgsConstructor
 public class Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	private long userId;
 	private String description;
 }
