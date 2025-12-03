@@ -1,1 +1,50 @@
-<aside><app-post-create></app-post-create></aside>
+<div class="dashboard-container">
+  
+  <!-- Welcome Banner -->
+  <header class="dashboard-header">
+    <div class="welcome-text">
+      <h1>Hello, <span class="highlight">{{ name || 'Creator' }}</span> 👋</h1>
+      <p>Share your ideas with the world today.</p>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    
+    <!-- Main Feed / Create Post Area -->
+    <main class="main-column">
+      <!-- Embedding the Post Create Component -->
+      <app-post-create></app-post-create>
+      
+      <!-- Placeholder for Feed -->
+      <div class="empty-feed-notice">
+        <p>Your recent posts will appear here below.</p>
+      </div>
+    </main>
+
+    <!-- Sidebar / Stats -->
+    <aside class="side-column">
+      <div class="stat-card">
+        <h3>Your Activity</h3>
+        
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="count">0</span>
+            <span class="label">Posts</span>
+          </div>
+          <div class="stat-item">
+            <span class="count">0</span>
+            <span class="label">Views</span>
+          </div>
+        </div>
+
+        <hr class="divider">
+        
+        <div class="quick-links">
+          <button (click)="goProfile()" class="link-btn">View Profile</button>
+          <button class="link-btn">Settings</button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>

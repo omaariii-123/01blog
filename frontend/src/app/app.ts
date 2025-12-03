@@ -23,4 +23,7 @@ export class App {
   goHome(){
   	this.nav.goToHome();
   }
+  goProfile(){
+  	this.nav.goToProfile();
+  }
 }

@@ -1,0 +1,58 @@
+/* Hero Section */
+.landing-hero {
+  position: relative;
+  height: 75vh;
+  background: linear-gradient(
+      rgba(63, 81, 181, 0.7),
+      rgba(63, 81, 181, 0.7)
+    ),
+    url('/assets/images/landing-image.png') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+.overlay {
+  padding: 20px;
+}
+
+.landing-title {
+  font-size: 3rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.landing-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Features Section */
+.landing-features {
+  padding: 60px 20px;
+  background-color: #fafafa;
+}
+
+.landing-features h2 {
+  margin-bottom: 40px;
+  color: #3f51b5;
+}
+
+.features-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.feature-card {
+  width: 300px;
+  padding: 16px;
+  text-align: left;
+}
+

@@ -1,23 +1,36 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Create New Post</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <form>
-      <mat-form-field appearance="fill">
-        <mat-label>Title</mat-label>
-        <input matInput placeholder="Ex. My new blog post">
-      </mat-form-field>
+<div class="create-post-wrapper">
+  <div class="post-card">
+    <header class="card-header">
+      <h2>Create New Post</h2>
+    </header>
 
-      <mat-form-field appearance="fill">
-        <mat-label>Content</mat-label>
-        <textarea matInput rows="5" placeholder="Write your thoughts..."></textarea>
-      </mat-form-field>
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input 
+          formControlName="title" 
+          type="text" 
+          id="title" 
+          placeholder="Ex. My new blog post" 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Content</label>
+        <textarea 
+          formControlName="description" 
+          id="description" 
+          rows="6" 
+          placeholder="Write your thoughts..."
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="onCancel()" class="btn btn-ghost">Cancel</button>
+        <button type="submit" [disabled]="postForm.invalid" class="btn btn-primary">Post</button>
+      </div>
+
     </form>
-  </mat-card-content>
-  <mat-card-actions align="end">
-    <button mat-button color="primary">Cancel</button>
-    <button mat-raised-button color="primary">Post</button>
-  </mat-card-actions>
-</mat-card>
-
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Create New Post</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field appearance="fill">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Ex. My new blog post">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Content</mat-label>
+        <textarea matInput rows="5" placeholder="Write your thoughts..."></textarea>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button color="primary">Cancel</button>
+    <button mat-raised-button color="primary">Post</button>
+  </mat-card-actions>
+</mat-card>
+

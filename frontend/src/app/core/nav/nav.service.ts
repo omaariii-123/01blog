@@ -13,6 +13,9 @@ export class NavigationService {
   goToHome() {
   	this.router.navigate(['/dash']);
   }
+  goToProfile(){
+  	this.router.navigate(['/profile']);
+  }
   goTo() {
   	this.router.navigate(['/']);
   }

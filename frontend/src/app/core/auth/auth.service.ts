@@ -55,6 +55,7 @@ export class AuthService {
 			},
 			error: (err) => {
 				console.log(err.message);
+					this.user.set(user);
 			}
 
 		});

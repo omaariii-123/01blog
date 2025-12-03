@@ -1,0 +1,91 @@
+<div class="profile-container">
+  
+  <div class="profile-card">
+    <!-- Decorative Header Banner -->
+    <div class="profile-banner"></div>
+
+    <!-- Avatar Section -->
+    <div class="profile-header">
+      <div class="avatar-circle">
+        {{ userInitials }}
+      </div>
+      
+      <!-- Action Buttons (Top Right) -->
+      <div class="header-actions">
+        @if (!isEditing()) {
+          <button (click)="toggleEdit()" class="btn btn-outline">Edit Profile</button>
+        }
+      </div>
+    </div>
+
+    <div class="profile-body">
+      
+      <!-- VIEW MODE -->
+      @if (!isEditing()) {
+        <div class="view-mode">
+          <h1 class="user-name">{{ auth.user()?.name }}</h1>
+          <p class="user-email">{{ auth.user()?.email }}</p>
+          
+          <div class="user-bio">
+            <p>{{ profileForm.get('bio')?.value }}</p>
+          </div>
+
+          <div class="user-meta">
+            <span class="meta-item">📍 {{ profileForm.get('location')?.value }}</span>
+            <span class="meta-item">📅 Joined January 2024</span>
+          </div>
+
+          <!-- Stats Row (Reusing your dashboard style) -->
+          <div class="stats-row">
+            <div class="stat">
+              <span class="count">12</span>
+              <span class="label">Posts</span>
+            </div>
+            <div class="stat">
+              <span class="count">1.5k</span>
+              <span class="label">Followers</span>
+            </div>
+            <div class="stat">
+              <span class="count">342</span>
+              <span class="label">Following</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- EDIT MODE -->
+      @else {
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="edit-mode-form">
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" formControlName="name" placeholder="Your name">
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" formControlName="email" class="disabled-input">
+              <small class="hint">Email cannot be changed.</small>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Bio</label>
+              <textarea formControlName="bio" rows="3" placeholder="Tell us about yourself"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" formControlName="location" placeholder="City, Country">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" (click)="toggleEdit()" class="btn btn-ghost">Cancel</button>
+            <button type="submit" [disabled]="profileForm.invalid" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      }
+
+    </div>
+  </div>

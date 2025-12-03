@@ -1,14 +1,26 @@
 import { Component, inject } from '@angular/core';
-import {AuthService} from '../../../core/auth/auth.service';
-import {PostCreate} from '../../post/post-create/post-create';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../core/auth/auth.service';
+import { NavigationService } from '../../../core/nav/nav.service';
+// Importing the component we created in the previous step
+import { PostCreateComponent } from '../../post/post-create/post-create';
 
 @Component({
   selector: 'app-dash',
-  imports: [PostCreate],
+  standalone: true,
+  imports: [CommonModule, PostCreateComponent],
   templateUrl: './dash.html',
   styleUrl: './dash.css'
 })
 export class Dash {
-	auth = inject(AuthService);
-	name = this.auth.user()?.name;
+  auth = inject(AuthService);
+  nav = inject(NavigationService);
+  
+  // Using a getter ensures we always have the latest name if the user signal updates
+  get name() {
+    return this.auth.user()?.name;
+  }
+  goProfile(){
+  	this.nav.goToProfile();
+  }
 }
