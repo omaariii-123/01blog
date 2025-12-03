@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/auth/auth.service';
 import { NavigationService } from '../../../core/nav/nav.service';
-// Importing the component we created in the previous step
+import { PostService } from '../../post/services/post.service';
 import { PostCreateComponent } from '../../post/post-create/post-create';
 
 @Component({
@@ -12,15 +12,22 @@ import { PostCreateComponent } from '../../post/post-create/post-create';
   templateUrl: './dash.html',
   styleUrl: './dash.css'
 })
-export class Dash {
+export class Dash implements OnInit {
   auth = inject(AuthService);
   nav = inject(NavigationService);
-  
-  // Using a getter ensures we always have the latest name if the user signal updates
+  postService = inject(PostService);
+
+  posts = this.postService.posts;
+
   get name() {
     return this.auth.user()?.name;
   }
-  goProfile(){
-  	this.nav.goToProfile();
+
+  ngOnInit() {
+    this.postService.getPosts().subscribe();
+  }
+
+  goProfile() {
+    this.nav.goToProfile();
   }
 }

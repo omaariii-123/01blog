@@ -2,14 +2,9 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-// Updated Interface to match your Form
-export interface Post {
-  id: string;
-  userId: string;
-  title: string;       // Added based on your HTML
-  description: string;
-}
+import { PostService } from '../services/post.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { Post } from '../post.model';
 
 @Component({
   selector: 'app-post-create',
@@ -19,45 +14,51 @@ export interface Post {
   styleUrl: './post-create.css'
 })
 export class PostCreateComponent {
-  
-  // 1. Modern Dependency Injection
+
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  // private auth = inject(AuthService); // You would inject your Auth service here to get the userId
+  private postService = inject(PostService);
+  private authService = inject(AuthService);
 
-  // 2. Form Definition
   postForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(5)]],
     description: ['', [Validators.required, Validators.minLength(10)]]
   });
 
-  // 3. Submit Logic
   onSubmit(): void {
     if (this.postForm.valid) {
       const formValues = this.postForm.value;
+      const currentUser = this.authService.user();
 
-      // Create the Post Object
+      if (!currentUser || !currentUser.id) {
+        console.error('User not logged in or missing ID');
+        return;
+      }
+
       const newPost: Post = {
-        id: crypto.randomUUID(), // Modern way to generate IDs in browser
-        userId: 'current-user-id', // Replace with this.auth.user().id
+        id: crypto.randomUUID(),
+        userId: currentUser.id as string,
         title: formValues.title || '',
         description: formValues.description || ''
       };
 
       console.log('Creating Post:', newPost);
-      
-      // TODO: Call your service here, e.g., this.postService.create(newPost).subscribe(...)
-      
-      // Navigate back to home or dashboard
-      this.router.navigate(['/']);
+
+      this.postService.createPost(newPost).subscribe({
+        next: () => {
+          this.router.navigate(['/dash']);
+        },
+        error: (err) => {
+          console.error('Error creating post:', err);
+        }
+      });
+
     } else {
-      // Optional: Mark all as touched to trigger error styles if user clicks submit early
       this.postForm.markAllAsTouched();
     }
   }
 
-  // 4. Cancel Logic
   onCancel(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/dash']);
   }
 }

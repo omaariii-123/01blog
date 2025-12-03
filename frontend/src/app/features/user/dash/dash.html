@@ -1,5 +1,5 @@
 <div class="dashboard-container">
-  
+
   <!-- Welcome Banner -->
   <header class="dashboard-header">
     <div class="welcome-text">
@@ -9,15 +9,26 @@
   </header>
 
   <div class="dashboard-grid">
-    
+
     <!-- Main Feed / Create Post Area -->
     <main class="main-column">
       <!-- Embedding the Post Create Component -->
       <app-post-create></app-post-create>
-      
-      <!-- Placeholder for Feed -->
-      <div class="empty-feed-notice">
-        <p>Your recent posts will appear here below.</p>
+
+      <!-- Post Feed -->
+      <div class="post-feed">
+        @if (posts().length === 0) {
+        <div class="empty-feed-notice">
+          <p>No posts yet. Be the first to share something!</p>
+        </div>
+        } @else {
+        @for (post of posts(); track post.id) {
+        <div class="post-card">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.description }}</p>
+        </div>
+        }
+        }
       </div>
     </main>
 
@@ -25,7 +36,7 @@
     <aside class="side-column">
       <div class="stat-card">
         <h3>Your Activity</h3>
-        
+
         <div class="stat-row">
           <div class="stat-item">
             <span class="count">0</span>
@@ -38,7 +49,7 @@
         </div>
 
         <hr class="divider">
-        
+
         <div class="quick-links">
           <button (click)="goProfile()" class="link-btn">View Profile</button>
           <button class="link-btn">Settings</button>

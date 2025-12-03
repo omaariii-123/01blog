@@ -1,54 +1,36 @@
-/* --- Variables & Host --- */
-:host {
-  --primary-color: #6366f1;
-  --primary-hover: #4f46e5;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --border-color: #e5e7eb;
-  --bg-card: #ffffff;
-  --banner-gradient: linear-gradient(135deg, #6366f1 0%, #a5b4fc 100%);
-  
-  display: block;
-  font-family: 'Inter', -apple-system, sans-serif;
-  background-color: #f3f4f6;
-  min-height: 100vh;
-  padding: 40px 20px;
-}
-
 .profile-container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Inter', sans-serif;
 }
 
-/* --- Card Structure --- */
 .profile-card {
-  background: var(--bg-card);
-  border-radius: 16px;
+  background: white;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
-/* --- Banner & Header --- */
 .profile-banner {
-  height: 140px;
-  background: var(--banner-gradient);
+  height: 150px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .profile-header {
   position: relative;
-  padding: 0 32px;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-top: -50px; /* Pulls content up into banner */
-  margin-bottom: 20px;
+  margin-top: -50px;
+  margin-bottom: 1rem;
 }
 
 .avatar-circle {
   width: 100px;
   height: 100px;
-  background-color: white;
+  background: white;
   border-radius: 50%;
   border: 4px solid white;
   display: flex;
@@ -56,54 +38,53 @@
   justify-content: center;
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  color: #4a5568;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .header-actions {
-  margin-bottom: 10px; /* Aligns button with bottom of avatar area */
+  margin-bottom: 10px;
+  display: flex;
+  gap: 0.5rem;
 }
 
-/* --- Body Content --- */
 .profile-body {
-  padding: 0 32px 40px 32px;
+  padding: 1rem 2rem 3rem;
 }
 
 .user-name {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--text-main);
-  margin: 0 0 4px 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
 }
 
 .user-email {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin: 0 0 24px 0;
+  color: #718096;
+  margin-top: 0.25rem;
 }
 
 .user-bio {
-  font-size: 1.05rem;
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  color: #2d3748;
   line-height: 1.6;
-  color: #374151;
-  margin-bottom: 24px;
-  max-width: 600px;
 }
 
 .user-meta {
   display: flex;
-  gap: 20px;
-  margin-bottom: 32px;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  color: #718096;
   font-size: 0.9rem;
-  color: var(--text-muted);
 }
 
-/* --- Stats Row --- */
 .stats-row {
   display: flex;
-  gap: 40px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-color);
+  gap: 3rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
 }
 
 .stat {
@@ -111,141 +92,161 @@
   flex-direction: column;
 }
 
-.stat .count {
+.count {
+  font-size: 1.5rem;
   font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--text-main);
+  color: #2d3748;
 }
 
-.stat .label {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+.label {
+  font-size: 0.875rem;
+  color: #718096;
 }
 
-/* --- Form Styles (Edit Mode) --- */
-.edit-mode-form {
-  margin-top: 10px;
-}
-
+/* Form Styles */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 32px;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .full-width {
   grid-column: 1 / -1;
 }
 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .form-group label {
-  display: block;
-  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--text-main);
+  color: #4a5568;
+  font-size: 0.9rem;
 }
 
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border-color);
+input,
+textarea {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 0.95rem;
-  box-sizing: border-box; /* Critical for grid */
-  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+input:focus,
+textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .disabled-input {
-  background-color: #f9fafb;
-  color: #9ca3af;
+  background-color: #f7fafc;
+  color: #a0aec0;
   cursor: not-allowed;
 }
 
 .hint {
   font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  display: block;
-}
-
-/* --- Buttons --- */
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-hover);
-}
-
-.btn-outline {
-  background: white;
-  border-color: var(--border-color);
-  color: var(--text-main);
-}
-
-.btn-outline:hover {
-  border-color: #d1d5db;
-  background-color: #f9fafb;
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-}
-
-.btn-ghost:hover {
-  color: var(--text-main);
-  background-color: #f3f4f6;
+  color: #a0aec0;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 1rem;
 }
 
-/* Mobile Tweaks */
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .profile-header {
-    flex-direction: column;
-    align-items: center;
-    margin-top: -50px;
-    gap: 16px;
-  }
-  
-  .profile-body {
-    text-align: center;
-  }
-  
-  .stats-row {
-    justify-content: center;
-  }
+/* Buttons */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
 
-  .user-meta {
-    justify-content: center;
-  }
+.btn-outline {
+  background: white;
+  border: 1px solid #cbd5e0;
+  color: #4a5568;
+}
+
+.btn-outline:hover {
+  background: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5a67d8;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #718096;
+}
+
+.btn-ghost:hover {
+  background: #f7fafc;
+  color: #4a5568;
+}
+
+.btn-danger {
+  background: #fff5f5;
+  color: #e53e3e;
+  border: 1px solid #fed7d7;
+}
+
+.btn-danger:hover {
+  background: #fed7d7;
+}
+
+/* User Posts Section */
+.user-posts-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.user-posts-section h2 {
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.post-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.mini-post-card {
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #edf2f7;
+}
+
+.mini-post-card h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2d3748;
+}
+
+.mini-post-card p {
+  margin: 0;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.no-posts {
+  color: #a0aec0;
+  font-style: italic;
 }
