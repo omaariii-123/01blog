@@ -1,54 +1,39 @@
 <div class="register-wrapper">
-  <div class="auth-card">
-    <header class="auth-header">
-      <h2>Create Account</h2>
-      <p class="subtitle">Join us and start your journey today</p>
-    </header>
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Create Account</mat-card-title>
+      <mat-card-subtitle>Join us and start your journey today</mat-card-subtitle>
+    </mat-card-header>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      
-      <div class="input-group">
-        <label for="name">Full Name</label>
-        <input 
-          formControlName="name" 
-          type="text" 
-          id="name" 
-          placeholder="e.g. John Doe" 
-          autocomplete="name"
-        />
-      </div>
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      <div class="input-group">
-        <label for="email">Email Address</label>
-        <input 
-          formControlName="email" 
-          type="email" 
-          id="email" 
-          placeholder="name@company.com" 
-          autocomplete="email"
-        />
-      </div>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput formControlName="name" type="text" id="name" placeholder="e.g. John Doe" autocomplete="name">
+        </mat-form-field>
 
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input 
-          formControlName="password" 
-          type="password" 
-          id="password" 
-          placeholder="Create a strong password" 
-          autocomplete="new-password"
-        />
-      </div>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password" id="password" autocomplete="new-password">
+        </mat-form-field>
 
-      <button type="submit" class="submit-btn">
-        Register
-      </button>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput formControlName="confirmPassword" type="password" id="confirmPassword"
+            autocomplete="new-password">
+        </mat-form-field>
 
-    </form>
+        <div class="terms-container">
+          <mat-checkbox formControlName="terms" color="primary">
+            I agree to the <a href="#" (click)="$event.preventDefault()">Terms and Conditions</a>
+          </mat-checkbox>
+        </div>
 
-    <div class="auth-footer">
-      <p>Already have an account?</p>
-      <a (click)="goLogin()" role="button" tabindex="0">Login here</a>
-    </div>
-  </div>
+        <button mat-flat-button color="primary" type="submit" [disabled]="!formValid()" class="submit-btn full-width">
+          Create Account
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

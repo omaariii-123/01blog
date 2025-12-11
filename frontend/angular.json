@@ -19,14 +19,12 @@
               {
                 "glob": "**/*",
                 "input": "public"
-
+              },
+              {
+                "glob": "**/*.png",
+                "input": "src/assets/images",
+                "output": "/assets/images"
               }
-			  {
-  				"glob": "**/*.png",
-  				"input": "src/assets/images",
-  				"output": "/assets/images"
-			  }
-
             ],
             "styles": [
               "src/custom-theme.scss",
@@ -47,7 +45,10 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "fonts": false
+              }
             },
             "development": {
               "optimization": false,

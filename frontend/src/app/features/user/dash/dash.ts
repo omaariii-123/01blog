@@ -5,10 +5,22 @@ import { NavigationService } from '../../../core/nav/nav.service';
 import { PostService } from '../../post/services/post.service';
 import { PostCreateComponent } from '../../post/post-create/post-create';
 
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-dash',
   standalone: true,
-  imports: [CommonModule, PostCreateComponent],
+  imports: [
+    CommonModule,
+    PostCreateComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule
+  ],
   templateUrl: './dash.html',
   styleUrl: './dash.css'
 })

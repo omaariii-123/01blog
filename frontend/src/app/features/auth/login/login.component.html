@@ -1,43 +1,34 @@
 <div class="login-wrapper">
-  <div class="auth-card">
-    <header class="auth-header">
-      <h2>Welcome Back</h2>
-      <p class="subtitle">Enter your credentials to access your account</p>
-    </header>
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Welcome Back</mat-card-title>
+      <mat-card-subtitle>Enter your credentials to access your account</mat-card-subtitle>
+    </mat-card-header>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      
-      <div class="input-group">
-        <label for="email">Email Address</label>
-        <input 
-          formControlName="email" 
-          type="email" 
-          id="email" 
-          placeholder="name@company.com" 
-          autocomplete="email"
-        />
-      </div>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input 
-          formControlName="password" 
-          type="password" 
-          id="password" 
-          placeholder="••••••••" 
-          autocomplete="current-password"
-        />
-      </div>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" id="email" placeholder="name@company.com"
+            autocomplete="email">
+        </mat-form-field>
 
-      <button type="submit" [disabled]="!formValid()" class="submit-btn">
-        Sign In
-      </button>
-    
-    </form>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password" id="password" autocomplete="current-password">
+        </mat-form-field>
 
-    <div class="auth-footer">
+        <button mat-flat-button color="primary" type="submit" [disabled]="!formValid()" class="submit-btn full-width">
+          Sign In
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-footer class="auth-footer">
       <p>Don't have an account?</p>
-      <a (click)="goRegister()" role="button" tabindex="0">Create an account</a>
-    </div>
-  </div>
+      <a (click)="goRegister()" mat-button>Create an account</a>
+    </mat-card-footer>
+  </mat-card>
 </div>

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nohup dockerd-rootless.sh > ~/docker-rootless.log 2>&1 &
+#nohup dockerd-rootless.sh > ~/docker-rootless.log 2>&1 &
 
 docker run --name my-postgres \
   -e POSTGRES_USER=postgres \

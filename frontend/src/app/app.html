@@ -1,31 +1,31 @@
 <div class="app-layout">
-  
+
   <!-- Navigation Header -->
-  <header class="navbar">
-    <div class="container navbar-content">
+  <mat-toolbar color="primary" class="navbar">
+    <div class="container" style="display: flex; align-items: center; width: 100%; gap: 16px;">
       <!-- Logo / Home Link -->
-      <a (click)="goHome()" class="brand-logo">
+      <a (click)="goHome()" class="brand-logo" style="cursor: pointer; text-decoration: none; color: inherit;">
         <span class="logo-icon">01</span> Blog
       </a>
 
-      <div class="spacer"></div>
+      <span class="spacer"></span>
 
       <!-- Navigation Actions -->
       <nav class="nav-actions">
-        
+
         @if (!auth.user()) {
-          <!-- Guest View -->
-          <button (click)="goLogin()" class="btn btn-ghost">Sign in</button>
-          <button (click)="goSignUp()" class="btn btn-primary">Sign up</button>
+        <!-- Guest View -->
+        <button mat-button (click)="goLogin()">Sign in</button>
+        <button mat-flat-button (click)="goSignUp()">Sign up</button>
         } @else {
-          <!-- Logged In View -->
-          <button (click)="goProfile()"class="btn btn-outline">Profile</button>
-          <button (click)="auth.logout()" class="btn btn-outline">Log out</button>
+        <!-- Logged In View -->
+        <button mat-stroked-button (click)="goProfile()">Profile</button>
+        <button mat-stroked-button (click)="auth.logout()">Log out</button>
         }
 
       </nav>
     </div>
-  </header>
+  </mat-toolbar>
 
   <!-- Main Content Area -->
   <main class="main-content">

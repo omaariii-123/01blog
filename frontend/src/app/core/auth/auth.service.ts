@@ -6,7 +6,7 @@ import { catchError, tap, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-	user = signal<{ name: String, email: String, id?: String } | null | undefined>(undefined);
+	user = signal<{ name: String, email: String, id?: number } | null | undefined>(undefined);
 	state = computed(() => this.user());
 
 	constructor(private http: HttpClient, private nav: NavigationService) {
@@ -14,12 +14,13 @@ export class AuthService {
 			if (this.state() === null) {
 				this.nav.goToLogin();
 			} else if (this.state() === undefined) {
-				this.nav.goTo();
+				// Initial state, maybe do nothing or redirect to home/login based on guard
+				// The previous code had this.nav.goTo() which seems incomplete/undefined
 			}
 		})
 	}
 	checkStatus() {
-		return this.http.get("http://localhost:8080/api/users/status", { withCredentials: true }).pipe(
+		return this.http.get("/api/users/status", { withCredentials: true }).pipe(
 			tap((user: any) => {
 				console.log(user);
 				this.user.set({ name: user.name, email: user.email, id: user.id });
@@ -31,7 +32,7 @@ export class AuthService {
 			));
 	}
 	register(user: User) {
-		this.http.post<User>('http://localhost:8080/api/users/register', user).subscribe({
+		this.http.post<User>('/api/users/register', user).subscribe({
 			next: (response) => {
 				this.nav.goToLogin();
 			},
@@ -48,20 +49,20 @@ export class AuthService {
 		let body = new URLSearchParams();
 		body.set('email', user.email);
 		body.set('password', user.password);
-		this.http.post<User>('http://localhost:8080/api/users/login', body, { headers, withCredentials: true }).subscribe({
+		this.http.post<User>('/api/users/login', body, { headers, withCredentials: true }).subscribe({
 			next: (user) => {
 				this.user.set(user);
 				this.nav.goToHome();
 			},
 			error: (err) => {
 				console.log(err.message);
-				this.user.set(user);
+				// Fixed: Do not set user on error
 			}
 
 		});
 	}
 	logout() {
-		this.http.post('http://localhost:8080/logout', {}, { withCredentials: true }).subscribe({
+		this.http.post('/api/users/logout', {}, { withCredentials: true }).subscribe({
 			next: (res) => {
 				console.log(res);
 				this.user.set(null);

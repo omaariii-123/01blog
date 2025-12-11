@@ -18,15 +18,26 @@
       <!-- Post Feed -->
       <div class="post-feed">
         @if (posts().length === 0) {
-        <div class="empty-feed-notice">
-          <p>No posts yet. Be the first to share something!</p>
-        </div>
+        <mat-card class="empty-feed-card" appearance="outlined">
+          <mat-card-content class="empty-content">
+            <mat-icon class="empty-icon">feed</mat-icon>
+            <p>No posts yet. Be the first to share something!</p>
+          </mat-card-content>
+        </mat-card>
         } @else {
         @for (post of posts(); track post.id) {
-        <div class="post-card">
-          <h3>{{ post.title }}</h3>
-          <p>{{ post.description }}</p>
-        </div>
+        <mat-card class="post-card" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ post.title }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ post.content }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button color="primary">Read More</button>
+            <button mat-icon-button><mat-icon>share</mat-icon></button>
+          </mat-card-actions>
+        </mat-card>
         }
         }
       </div>
@@ -34,27 +45,31 @@
 
     <!-- Sidebar / Stats -->
     <aside class="side-column">
-      <div class="stat-card">
-        <h3>Your Activity</h3>
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Your Activity</mat-card-title>
+        </mat-card-header>
 
-        <div class="stat-row">
-          <div class="stat-item">
-            <span class="count">0</span>
-            <span class="label">Posts</span>
+        <mat-card-content>
+          <div class="stat-row">
+            <div class="stat-item">
+              <span class="count">0</span>
+              <span class="label">Posts</span>
+            </div>
+            <div class="stat-item">
+              <span class="count">0</span>
+              <span class="label">Views</span>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="count">0</span>
-            <span class="label">Views</span>
-          </div>
-        </div>
+        </mat-card-content>
 
-        <hr class="divider">
+        <mat-divider></mat-divider>
 
-        <div class="quick-links">
-          <button (click)="goProfile()" class="link-btn">View Profile</button>
-          <button class="link-btn">Settings</button>
-        </div>
-      </div>
+        <mat-card-actions class="quick-links">
+          <button mat-stroked-button (click)="goProfile()" class="full-width-btn">View Profile</button>
+          <button mat-stroked-button class="full-width-btn">Settings</button>
+        </mat-card-actions>
+      </mat-card>
     </aside>
 
   </div>

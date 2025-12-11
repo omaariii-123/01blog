@@ -22,7 +22,7 @@ public class UsrDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		var userd = new MyUserDetails(user.getName(), user.getEmail(), user.getPassword(), null);
+        var userd = new MyUserDetails(user.getId(), user.getName(), user.getEmail(), user.getPassword(), null);
         return userd;
     }
 }

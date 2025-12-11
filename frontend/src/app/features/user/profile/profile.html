@@ -1,25 +1,22 @@
 <div class="profile-container">
+  <mat-card class="profile-card">
 
-  <div class="profile-card">
-    <!-- Decorative Header Banner -->
+    <!-- Header with Banner and Avatar -->
     <div class="profile-banner"></div>
-
-    <!-- Avatar Section -->
-    <div class="profile-header">
+    <div class="profile-header-content">
       <div class="avatar-circle">
         {{ userInitials }}
       </div>
 
-      <!-- Action Buttons (Top Right) -->
       <div class="header-actions">
         @if (!isEditing()) {
-        <button (click)="toggleEdit()" class="btn btn-outline">Edit Profile</button>
-        <button (click)="logout()" class="btn btn-danger">Logout</button>
+        <button mat-stroked-button (click)="toggleEdit()">Edit Profile</button>
+        <button mat-stroked-button color="warn" (click)="logout()">Logout</button>
         }
       </div>
     </div>
 
-    <div class="profile-body">
+    <mat-card-content class="profile-body">
 
       <!-- VIEW MODE -->
       @if (!isEditing()) {
@@ -27,14 +24,21 @@
         <h1 class="user-name">{{ auth.user()?.name }}</h1>
         <p class="user-email">{{ auth.user()?.email }}</p>
 
+        @if (profileForm.get('bio')?.value) {
         <div class="user-bio">
           <p>{{ profileForm.get('bio')?.value }}</p>
         </div>
+        }
 
         <div class="user-meta">
-          <span class="meta-item">📍 {{ profileForm.get('location')?.value }}</span>
+          @if (profileForm.get('location')?.value) {
+          <span class="meta-item">📍 {{ profileForm.get('location')?.value
+            }}</span>
+          }
           <span class="meta-item">📅 Joined January 2024</span>
         </div>
+
+        <mat-divider style="margin: 24px 0;"></mat-divider>
 
         <!-- Stats Row -->
         <div class="stats-row">
@@ -52,21 +56,28 @@
           </div>
         </div>
 
+        <mat-divider style="margin: 24px 0;"></mat-divider>
+
         <!-- User Posts Section -->
         <div class="user-posts-section">
-          <h2>My Posts</h2>
-          <div class="post-list">
-            @if (userPosts().length === 0) {
-            <p class="no-posts">You haven't posted anything yet.</p>
-            } @else {
+          <h2 class="section-title">My Posts</h2>
+
+          @if (userPosts().length === 0) {
+          <p class="no-posts">You haven't posted anything yet.</p>
+          } @else {
+          <div class="post-grid">
             @for (post of userPosts(); track post.id) {
-            <div class="mini-post-card">
-              <h4>{{ post.title }}</h4>
-              <p>{{ post.description }}</p>
-            </div>
-            }
+            <mat-card class="mini-post-card" appearance="outlined">
+              <mat-card-header>
+                <mat-card-title style="font-size: 16px;">{{ post.title }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p class="truncate">{{ post.content }}</p>
+              </mat-card-content>
+            </mat-card>
             }
           </div>
+          }
         </div>
 
       </div>
@@ -75,37 +86,38 @@
       <!-- EDIT MODE -->
       @else {
       <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="edit-mode-form">
-
         <div class="form-grid">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" formControlName="name" placeholder="Your name">
-          </div>
 
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" formControlName="email" class="disabled-input">
-            <small class="hint">Email cannot be changed.</small>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="name" placeholder="Your name">
+          </mat-form-field>
 
-          <div class="form-group full-width">
-            <label>Bio</label>
-            <textarea formControlName="bio" rows="3" placeholder="Tell us about yourself"></textarea>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" readonly>
+            <mat-hint>Email cannot be changed.</mat-hint>
+          </mat-form-field>
 
-          <div class="form-group">
-            <label>Location</label>
-            <input type="text" formControlName="location" placeholder="City, Country">
-          </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Bio</mat-label>
+            <textarea matInput formControlName="bio" rows="3" placeholder="Tell us about yourself"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Location</mat-label>
+            <input matInput formControlName="location" placeholder="City, Country">
+          </mat-form-field>
+
         </div>
 
         <div class="form-actions">
-          <button type="button" (click)="toggleEdit()" class="btn btn-ghost">Cancel</button>
-          <button type="submit" [disabled]="profileForm.invalid" class="btn btn-primary">Save Changes</button>
+          <button mat-button type="button" (click)="toggleEdit()">Cancel</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="profileForm.invalid">Save Changes</button>
         </div>
       </form>
       }
 
-    </div>
-  </div>
+    </mat-card-content>
+  </mat-card>
 </div>

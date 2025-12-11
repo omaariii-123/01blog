@@ -7,7 +7,7 @@ import { Post } from '../post.model';
     providedIn: 'root'
 })
 export class PostService {
-    private apiUrl = 'http://localhost:8080/api/posts';
+    private apiUrl = '/api/posts';
     private http = inject(HttpClient);
 
     // Signal to hold the list of posts
@@ -39,10 +39,10 @@ export class PostService {
         );
     }
 
-    deletePost(id: string): Observable<void> {
+    deletePost(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true }).pipe(
             tap(() => {
-                this.posts.update(posts => posts.filter(p => p.id !== id));
+                this.posts.update(posts => posts.filter(p => p.id !== id)); // Lint fixed
             })
         );
     }

@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,67 +14,53 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod; // Added
 import myapp.model.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.core.userdetails.UserDetails;
 import myapp.model.MyUserDetails;
-import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
-
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	@Bean
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/users/status").authenticated()
-                .requestMatchers(
-					HttpMethod.POST,
-                    "/api/users/register",
-                    "/api/users/login"
-                ).permitAll()
+                .requestMatchers("/api/users/status").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/users/register", "/api/users/login").permitAll()
+                .requestMatchers("/api/posts/**").authenticated() // Secure posts
+                .requestMatchers("/actuator/**").permitAll() // Health check
                 .anyRequest().authenticated()
             )
-            .formLogin().loginProcessingUrl("/api/users/login").usernameParameter("email").successHandler(authenticationSuccessHandler()).failureHandler(authenticationFailureHandler())
-			.and()
-         .sessionManagement(session ->
+            .formLogin(login -> login
+                .loginProcessingUrl("/api/users/login")
+                .usernameParameter("email")
+                .successHandler(authenticationSuccessHandler())
+                .failureHandler(authenticationFailureHandler())
+            )
+            .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-           )
-		 .logout(logout -> logout
-    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
-    .invalidateHttpSession(true)
-    .clearAuthentication(true)
-    .deleteCookies("JSESSIONID")
-	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-)
-		 .exceptionHandling(exceptions -> exceptions
-                .authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED))
+            )
+            .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             );
-		return http.build();
+        return http.build();
     }
 
     @Bean
@@ -84,14 +69,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-@Bean
+
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOriginPatterns(List.of("*")); // Allow all for Docker/Dev flexibility, careful in prod
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -100,17 +85,18 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
- @Bean
+
+    @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-			MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
+            MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
             response.setStatus(HttpStatus.OK.value());
-			UserDto userd = new UserDto();
-			userd.setName(user.getName());
-			userd.setEmail(user.getEmail());
-			response.getWriter().write(objectMapper.writeValueAsString(userd));
-			response.getWriter().flush();
-			
+            UserDto userd = new UserDto();
+            userd.setName(user.getName());
+            userd.setEmail(user.getEmail());
+            userd.setId(user.getId());
+            response.getWriter().write(objectMapper.writeValueAsString(userd));
+            response.getWriter().flush();
         };
     }
 

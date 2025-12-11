@@ -1,43 +1,57 @@
-<section class="hero-section">
-  <div class="hero-content">
-    <h1 class="hero-title">Welcome to <span class="brand-highlight">01 Blog</span></h1>
-    <p class="hero-subtitle">
-      Share your thoughts. Inspire others. Join a global community of creators.
-    </p>
-    
-    <div class="hero-actions">
-      <button (click)="goRegister()" class="cta-btn primary">
-        Get Started
-      </button>
-      <button class="cta-btn secondary">
-        Learn More
-      </button>
-    </div>
-  </div>
-</section>
+<div class="landing-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to <span class="brand-highlight">01 Blog</span></h1>
+      <p class="hero-subtitle">
+        Share your thoughts. Inspire others. Join a global community of creators.
+      </p>
 
-<section class="features-section">
-  <h2 class="section-title">Why Join 01 Blog?</h2>
-  
-  <div class="features-grid">
-    
-    <div class="feature-card">
-      <div class="icon-box">✍️</div>
-      <h3>Write Freely</h3>
-      <p>A distraction-free writing experience made for thinkers and storytellers to focus on what matters.</p>
+      <div class="hero-actions">
+        <button mat-flat-button color="primary" class="cta-btn large" (click)="goRegister()">
+          Get Started
+        </button>
+        <button mat-stroked-button class="cta-btn large">
+          Learn More
+        </button>
+      </div>
     </div>
+  </section>
 
-    <div class="feature-card">
-      <div class="icon-box">🌍</div>
-      <h3>Connect Globally</h3>
-      <p>Engage with a diverse network of readers and writers from all around the world.</p>
+  <section class="features-section">
+    <h2 class="section-title">Why Join 01 Blog?</h2>
+
+    <div class="features-grid">
+
+      <mat-card class="feature-card" appearance="outlined">
+        <div class="icon-box">✍️</div>
+        <mat-card-header>
+          <mat-card-title>Write Freely</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>A distraction-free writing experience made for thinkers and storytellers to focus on what matters.</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card" appearance="outlined">
+        <div class="icon-box">🌍</div>
+        <mat-card-header>
+          <mat-card-title>Connect Globally</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Engage with a diverse network of readers and writers from all around the world.</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card" appearance="outlined">
+        <div class="icon-box">💡</div>
+        <mat-card-header>
+          <mat-card-title>Stay Inspired</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Explore trending topics, discover new perspectives, and fuel your creativity every day.</p>
+        </mat-card-content>
+      </mat-card>
+
     </div>
-
-    <div class="feature-card">
-      <div class="icon-box">💡</div>
-      <h3>Stay Inspired</h3>
-      <p>Explore trending topics, discover new perspectives, and fuel your creativity every day.</p>
-    </div>
-
-  </div>
-</section>
+  </section>
+</div>
