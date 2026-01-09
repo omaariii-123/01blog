@@ -1,96 +1,206 @@
-/* --- Global Layout Variables --- */
-:host {
-  --primary-color: #673ab7;
-  /* Deep Purple */
-  --primary-hover: #512da8;
-  --text-main: #1c1917;
-  /* Warm dark gray */
-  --text-muted: #57534e;
-  --bg-body: #f8fafc;
-  --border-color: #e2e8f0;
-
-  display: block;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--bg-body);
-  /* Premium Mesh Gradient Background */
-  background-image:
-    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
-  background-image:
-    radial-gradient(at 40% 20%, hsla(266, 50%, 94%, 1) 0px, transparent 50%),
-    radial-gradient(at 80% 0%, hsla(311, 50%, 94%, 1) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, hsla(340, 100%, 76%, 0.05) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, hsla(356, 100%, 96%, 1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, hsla(22, 100%, 96%, 1) 0px, transparent 50%),
-    radial-gradient(at 80% 100%, hsla(242, 100%, 96%, 1) 0px, transparent 50%),
-    radial-gradient(at 0% 0%, hsla(343, 100%, 96%, 1) 0px, transparent 50%);
-  background-attachment: fixed;
-  /* Parallax-like feel */
-  min-height: 100vh;
-  color: var(--text-main);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+/* --- THEME VARIABLES: "Midnight Developer" --- */
+:root {
+  --header-bg: #0f172a;       /* Dark Slate */
+  --header-text: #e2e8f0;     /* Off-white */
+  --input-bg: #1e293b;        /* Slightly lighter slate */
+  --input-border: #334155;    /* Border color */
+  --accent-color: #3b82f6;    /* Tech Blue */
+  --accent-hover: #2563eb;
+  --bg-color: #f1f5f9;        /* Light Grey Content BG */
 }
 
-/* --- Layout Structure --- */
 .app-layout {
-  display: flex;
-  flex-direction: column;
+  background-color: var(--bg-color);
   min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-.container {
-  width: 100%;
-  max-width: 1200px;
+/* --- Header Container --- */
+.tech-header {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #1e293b;
+}
+
+.header-container {
+  max-width: 1600px; /* Wide layout */
   margin: 0 auto;
+  height: 100%;
   padding: 0 20px;
-  box-sizing: border-box;
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px; /* Essential for preventing overlap */
 }
 
-/* --- Navbar Styling --- */
-
-/* --- Navbar Spacer --- */
-.spacer {
-  flex: 1 1 auto;
+/* --- LEFT GROUP: Logo & Search --- */
+.header-start {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1; /* Allows this section to grow */
+  min-width: 0; /* Prevents flex crush */
 }
 
-/* --- Brand Logo in Toolbar --- */
-.brand-logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: inherit;
-  /* Inherit from mat-toolbar */
-  cursor: pointer;
+.tech-brand {
   text-decoration: none;
+  font-family: 'Fira Code', 'Roboto Mono', monospace; /* Monospace for dev feel */
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: white;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.brand-bracket { color: #64748b; }
+.brand-text { color: var(--accent-color); }
+
+/* --- SEARCH BLOCK (Rectangular) --- */
+.search-block {
+  display: flex;
+  align-items: center;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 6px; /* Slight rounded corners, not pill */
+  padding: 0 12px;
+  height: 36px;
+  width: 100%;
+  max-width: 400px;
+  transition: border-color 0.2s;
+}
+
+.search-block:focus-within {
+  border-color: var(--accent-color);
+}
+
+.search-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #94a3b8;
+  margin-right: 8px;
+}
+
+.search-block input {
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.keyboard-hint {
+  border: 1px solid #475569;
+  border-radius: 4px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+/* --- RIGHT GROUP: Actions --- */
+.header-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0; /* Ensures buttons never shrink */
+}
+
+/* Create Button (Solid Color) */
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  height: 32px;
+  padding: 0 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.action-btn:hover { background-color: var(--accent-hover); }
+
+.action-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+/* Divider Line */
+.divider-vertical {
+  width: 1px;
+  height: 24px;
+  background-color: #334155;
+  margin: 0 4px;
+}
+
+/* Icon Buttons */
+.icon-action {
+  color: #94a3b8;
+}
+.icon-action:hover { color: white; }
+
+/* User Chip (Rectangular with Name) */
+.user-chip {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.logo-icon {
-  background-color: white;
-  /* Solid white for max contrast */
-  color: var(--primary-color);
-  /* Deep Purple text */
-  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 6px;
-  font-size: 15px;
-  font-weight: 800;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--header-text);
+  transition: background 0.2s;
 }
 
-/* --- Navigation & Buttons in Toolbar --- */
-/* --- Navigation & Buttons in Toolbar --- */
-.nav-actions {
-  display: flex;
-  gap: 16px;
-  /* Increased spacing */
-  align-items: center;
+.user-chip:hover {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
 }
 
-/* --- Main Content --- */
-.main-content {
-  padding-top: 24px;
-  flex: 1;
+.user-chip img {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px; /* Square avatar */
 }
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-arrow {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #64748b;
+}
+
+/* --- RESPONSIVE LOGIC (Prevent Overlap) --- */
+@media (max-width: 800px) {
+  .search-block {
+    display: none; /* Hide search input */
+  }
+  
+  .user-name {
+    display: none; /* Hide text name, show only avatar */
+  }
+  
+  .btn-label {
+    display: none; /* Turn "Create" button into just a "+" icon */ 
+    }
+  }

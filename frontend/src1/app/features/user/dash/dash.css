@@ -1,0 +1,4 @@
+.composer-card { margin-bottom: 24px; padding: 16px; }
+.composer-actions { display: flex; align-items: center; margin-top: 8px; }
+/* Hides the extra padding on material inputs to make the card tighter */
+::ng-deep .no-bottom .mat-form-field-wrapper { padding-bottom: 0; }

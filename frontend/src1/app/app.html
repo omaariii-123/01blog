@@ -1,0 +1,23 @@
+<mat-toolbar color="primary" class="main-toolbar">
+  <span style="font-weight: 500;">SocialBlock</span>
+  
+  <div class="nav-links" style="margin-left: 20px;">
+    <button mat-button routerLink="/">Feed</button>
+    <button mat-button routerLink="/profile">My Block</button>
+    <button mat-button routerLink="/admin">Admin</button>
+  </div>
+  
+  <span class="spacer"></span>
+  
+  <button mat-icon-button><mat-icon>search</mat-icon></button>
+  <button mat-icon-button>
+    <mat-icon matBadge="3" matBadgeColor="accent">notifications</mat-icon>
+  </button>
+  <button mat-icon-button routerLink="/profile">
+    <img src="https://i.pravatar.cc/150?img=12" class="nav-avatar">
+  </button>
+</mat-toolbar>
+
+<div class="content-wrapper">
+  <router-outlet></router-outlet>
+</div>

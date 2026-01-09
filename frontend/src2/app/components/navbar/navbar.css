@@ -1,0 +1,12 @@
+.sticky-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.logo { font-weight: 500; font-size: 1.2rem; }
+.nav-links { margin-left: 20px; display: none; } /* Hidden on mobile by default */
+@media(min-width: 600px) { .nav-links { display: block; } }
+
+.avatar-btn img {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.8);
+}

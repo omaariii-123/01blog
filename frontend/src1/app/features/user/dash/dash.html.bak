@@ -1,0 +1,70 @@
+<nav class="navbar">
+    <div class="nav-brand">MyBlock</div>
+    <div class="nav-links">
+        <a href="#" class="nav-item active">Feed</a>
+        <a href="#" class="nav-item">My Block</a>
+        <a href="#" class="nav-item">Admin</a>
+        <img src="https://i.pravatar.cc/150?img=12" class="nav-avatar">
+    </div>
+</nav>
+
+<div class="container feed-layout">
+    
+    <div class="post-card">
+        <div style="display: flex; gap: 15px;">
+            <img src="https://i.pravatar.cc/150?img=12" class="nav-avatar">
+            <input type="text" class="form-control" placeholder="What's on your block today?">
+        </div>
+        <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+            <button class="btn btn-outline" style="font-size:0.8rem">📷 Add Media</button>
+            <button class="btn btn-primary">Publish</button>
+        </div>
+    </div>
+
+    <div class="post-card">
+        <div class="post-header">
+            <img src="https://i.pravatar.cc/150?img=68" class="nav-avatar">
+            <div class="user-info">
+                <h4>Sarah Jenkins</h4>
+                <span>2 hours ago</span>
+            </div>
+            <button class="btn btn-outline" style="margin-left: auto; border:none;">⋮</button>
+        </div>
+        
+        <p style="margin-bottom: 15px; color: var(--text-muted);">
+            Just finished setting up my new workspace! What do you think? #setup #tech
+        </p>
+
+        <div class="post-media">
+             
+
+[Image of modern desk setup]
+
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Post content">
+        </div>
+
+        <div class="post-actions">
+            <button class="action-btn">❤️ 124 Likes</button>
+            <button class="action-btn">💬 45 Comments</button>
+            <button class="action-btn" style="margin-left: auto;">⚠️ Report</button>
+        </div>
+    </div>
+
+    <div class="post-card">
+        <div class="post-header">
+            <img src="https://i.pravatar.cc/150?img=33" class="nav-avatar">
+            <div class="user-info">
+                <h4>Devon Lane</h4>
+                <span>5 hours ago</span>
+            </div>
+        </div>
+        <p style="margin-bottom: 15px; color: var(--text-muted);">
+            Learning Angular and Spring Boot is a journey, but it pays off!
+        </p>
+        <div class="post-actions">
+            <button class="action-btn">❤️ 89 Likes</button>
+            <button class="action-btn">💬 12 Comments</button>
+        </div>
+    </div>
+
+</div>

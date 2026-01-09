@@ -1,0 +1,4 @@
+.post-card { max-width: 600px; margin: 0 auto 20px auto; }
+.header-image { background-size: cover; background-position: center; }
+mat-card-content { margin-top: 12px; font-size: 14px; line-height: 1.5; }
+mat-card-actions { border-top: 1px solid #eee; }

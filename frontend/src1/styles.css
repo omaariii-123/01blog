@@ -1,0 +1,15 @@
+/* Ensure you have Angular Material pre-built theme imported in angular.json or here */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+    background-color: #f5f5f5; /* Light Gray Background */
+}
+
+/* Utility Classes */
+.spacer { flex: 1 1 auto; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.full-width { width: 100%; }
+.text-center { text-align: center; }

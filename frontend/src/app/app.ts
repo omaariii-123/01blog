@@ -1,31 +1,33 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from './core/auth/auth.service';
-import { NavigationService } from './core/nav/nav.service';
-import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbarModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('01Blog');
-  constructor(public nav: NavigationService, public auth: AuthService) { }
-  goLogin() {
-    this.nav.goToLogin();
-  }
-  goSignUp() {
-    this.nav.goToSignup();
-  }
-  goHome() {
-    this.nav.goToHome();
-  }
-  goProfile() {
-    this.nav.goToProfile();
+  authService = inject(AuthService);
+
+  logout() {
+    this.authService.logout();
   }
 }

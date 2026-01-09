@@ -1,0 +1,96 @@
+/* --- Global Layout Variables --- */
+:host {
+  --primary-color: #673ab7;
+  /* Deep Purple */
+  --primary-hover: #512da8;
+  --text-main: #1c1917;
+  /* Warm dark gray */
+  --text-muted: #57534e;
+  --bg-body: #f8fafc;
+  --border-color: #e2e8f0;
+
+  display: block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-body);
+  /* Premium Mesh Gradient Background */
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+  background-image:
+    radial-gradient(at 40% 20%, hsla(266, 50%, 94%, 1) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(311, 50%, 94%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(340, 100%, 76%, 0.05) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, hsla(356, 100%, 96%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(22, 100%, 96%, 1) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, hsla(242, 100%, 96%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, hsla(343, 100%, 96%, 1) 0px, transparent 50%);
+  background-attachment: fixed;
+  /* Parallax-like feel */
+  min-height: 100vh;
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Layout Structure --- */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* --- Navbar Styling --- */
+
+/* --- Navbar Spacer --- */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* --- Brand Logo in Toolbar --- */
+.brand-logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: inherit;
+  /* Inherit from mat-toolbar */
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  background-color: white;
+  /* Solid white for max contrast */
+  color: var(--primary-color);
+  /* Deep Purple text */
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Navigation & Buttons in Toolbar --- */
+/* --- Navigation & Buttons in Toolbar --- */
+.nav-actions {
+  display: flex;
+  gap: 16px;
+  /* Increased spacing */
+  align-items: center;
+}
+
+/* --- Main Content --- */
+.main-content {
+  padding-top: 24px;
+  flex: 1;
+}

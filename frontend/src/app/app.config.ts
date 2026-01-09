@@ -1,27 +1,16 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, APP_INITIALIZER } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { routes } from './app.routes';
-import { AuthService } from './core/auth/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-function initializeApp(authService: AuthService) {
-	return () => firstValueFrom(authService.checkStatus());
-}
+import { routes } from './app.routes';
+import { authInterceptor } from './auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-	providers: [
-		provideBrowserGlobalErrorListeners(),
-		provideAnimationsAsync(),
-		provideRouter(routes),
-		provideHttpClient(),
-		AuthService,
-		{
-			provide: APP_INITIALIZER,
-			useFactory: initializeApp,
-			deps: [AuthService],
-			multi: true
-		}
-	]
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideAnimationsAsync()
+  ]
 };

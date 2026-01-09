@@ -1,0 +1,77 @@
+/* --- New Global Defaults for Minimalist Feel --- */
+.mat-post-list-container {
+    padding: 40px 20px; /* More vertical space */
+    background-color: #f7f9fc; /* Very light, cool background */
+}
+
+.mat-h2 {
+    font-size: 2.8em;
+    font-weight: 200; /* Lighter font weight for modern titles */
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 50px;
+}
+
+/* --- Responsive Grid Layout (Retained from before) --- */
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 40px; /* Increased gap for more breathing room */
+}
+
+/* --- Individual Post Card Styling Overhaul --- */
+.post-card {
+    /* mat-card provides background: white and border-radius */
+    border: 1px solid #e0e6ed; /* Subtle, light border */
+    box-shadow: none !important; /* Remove Material's default box shadow */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* Force flat appearance for a clean look */
+    border-radius: 6px;
+}
+
+/* Enhanced Hover Effect */
+.post-card:hover {
+    /* Lift and give a distinct shadow */
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(44, 62, 80, 0.08); 
+    border-color: #3f51b5; /* Highlight border on hover using primary color */
+}
+
+/* --- Content Styling --- */
+.post-image-placeholder {
+    height: 180px;
+    opacity: 0.95; /* Slightly muted image look */
+}
+
+.post-title {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.post-date {
+    font-size: 0.9em;
+    color: #95a5a6; /* Subtle gray for date */
+    text-transform: capitalize;
+}
+
+/* Button Styling (Using Material's Primary color for emphasis) */
+.post-actions .mat-button {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Responsive adjustments from before remain valid */
+@media (max-width: 992px) {
+    .post-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .post-grid {
+        grid-template-columns: 1fr;
+    }
+}

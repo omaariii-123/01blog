@@ -1,0 +1,5 @@
+.feed-container { max-width: 600px; margin: 80px auto 20px; padding: 0 10px; }
+.composer { margin-bottom: 24px; padding: 16px; }
+.composer-actions { display: flex; align-items: center; margin-top: 5px; }
+/* Clean up extra Material padding */
+::ng-deep .no-bottom .mat-mdc-form-field-subscript-wrapper { display: none; }

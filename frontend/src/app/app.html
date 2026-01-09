@@ -1,37 +1,60 @@
 <div class="app-layout">
+  @if (authService.isLoggedIn()) {
+  <header class="tech-header mat-elevation-z2">
+    <div class="header-container">
+      
+      <div class="header-start">
+        <a routerLink="/" class="tech-brand">
+          <span class="brand-bracket">&lt;</span>
+          01<span class="brand-text">Blog</span>
+          <span class="brand-bracket">/&gt;</span>
+        </a>
 
-  <!-- Navigation Header -->
-  <mat-toolbar color="primary" class="navbar">
-    <div class="container" style="display: flex; align-items: center; width: 100%; gap: 16px;">
-      <!-- Logo / Home Link -->
-      <a (click)="goHome()" class="brand-logo" style="cursor: pointer; text-decoration: none; color: inherit;">
-        <span class="logo-icon">01</span> Blog
-      </a>
+        <div class="search-block">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" placeholder="Type / to search...">
+          <span class="keyboard-hint">/</span>
+        </div>
+      </div>
 
-      <span class="spacer"></span>
+      <div class="header-end">
+        
+        <button class="action-btn accent-btn">
+          <mat-icon>add</mat-icon>
+          <span class="btn-label">Create</span>
+        </button>
 
-      <!-- Navigation Actions -->
-      <nav class="nav-actions">
+        <div class="divider-vertical"></div>
 
-        @if (!auth.user()) {
-        <!-- Guest View -->
-        <button mat-button (click)="goLogin()">Sign in</button>
-        <button mat-flat-button (click)="goSignUp()">Sign up</button>
-        } @else {
-        <!-- Logged In View -->
-        <button mat-stroked-button (click)="goProfile()">Profile</button>
-        <button mat-stroked-button (click)="auth.logout()">Log out</button>
-        }
+        <button mat-icon-button class="icon-action">
+          <mat-icon>notifications</mat-icon>
+        </button>
 
-      </nav>
+        <button class="user-chip" [matMenuTriggerFor]="userMenu">
+          <img [src]="'https://api.dicebear.com/9.x/initials/svg?seed=' + authService.currentUser()" alt="User">
+          <span class="user-name">{{ authService.currentUser() }}</span>
+          <mat-icon class="dropdown-arrow">expand_more</mat-icon>
+        </button>
+      </div>
+
+      <mat-menu #userMenu="matMenu" xPosition="before" class="tech-menu">
+        <button mat-menu-item [routerLink]="['/block', authService.currentUser()]">
+          <mat-icon>person</mat-icon> <span>Profile</span>
+        </button>
+        <button mat-menu-item *ngIf="authService.isAdmin()" routerLink="/admin">
+          <mat-icon>terminal</mat-icon> <span>Console</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>power_settings_new</mat-icon> <span>Disconnect</span>
+        </button>
+      </mat-menu>
+
     </div>
-  </mat-toolbar>
+  </header>
+  }
 
-  <!-- Main Content Area -->
-  <main class="main-content">
-    <div class="container">
-      <router-outlet></router-outlet>
-    </div>
-  </main>
-
+  <div class="content-area">
+    <router-outlet></router-outlet>
+  </div>
 </div>

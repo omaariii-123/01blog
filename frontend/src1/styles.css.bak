@@ -1,0 +1,132 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+	background: skyblue;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root {
+    /* Color Palette - Cyberpunk/Modern Dark */
+    --bg-color: #0f111a;
+    --card-bg: #1e2130;
+    --primary: #6c5ce7; /* Soft Purple */
+    --accent: #00cec9;  /* Teal */
+    --danger: #ff7675;
+    --text-main: #dfe6e9;
+    --text-muted: #b2bec3;
+    --border: #2d3436;
+    
+    /* Spacing & Radius */
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* Utilities */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #5649c0; }
+.btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text-main); }
+.btn-danger { background: var(--danger); color: white; }
+
+/* 1. Navbar */
+.navbar {
+    background: rgba(30, 33, 48, 0.9);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-brand { font-size: 1.5rem; font-weight: bold; color: var(--primary); letter-spacing: 1px; }
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-item { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; transition: color 0.2s;}
+.nav-item:hover, .nav-item.active { color: var(--accent); }
+.nav-avatar { width: 35px; height: 35px; border-radius: 50%; background: #555; object-fit: cover; }
+
+/* 2. Layouts */
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.feed-layout { max-width: 650px; margin: 0 auto; } /* For Home Feed */
+
+/* 3. Post Card */
+.post-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+.post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+.user-info h4 { font-size: 1rem; margin: 0; }
+.user-info span { font-size: 0.8rem; color: var(--text-muted); }
+.post-media {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+.post-media img { width: 100%; height: auto; display: block; }
+.post-actions { display: flex; gap: 20px; padding-top: 10px; border-top: 1px solid var(--border); }
+.action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.action-btn:hover { color: var(--primary); }
+
+/* 4. Profile (The "Block") */
+.profile-header {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.profile-avatar-lg { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 15px; }
+.stats { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
+.stat-box strong { display: block; font-size: 1.2rem; }
+
+/* 5. Masonry Grid for Profile Posts */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.grid-item { position: relative; border-radius: var(--radius); overflow: hidden; height: 250px; cursor: pointer; }
+.grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.grid-item:hover img { transform: scale(1.05); }
+
+/* 6. Admin Table */
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.admin-table th, .admin-table td { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); }
+.admin-table th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+.status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; background: #2d3436; }
+.status-badge.banned { background: rgba(255, 118, 117, 0.2); color: var(--danger); }
+
+/* 7. Forms */
+.form-group { margin-bottom: 15px; }
+.form-control {
+    width: 100%;
+    padding: 12px;
+    background: #141722;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: white;
+}
+.form-control:focus { outline: none; border-color: var(--primary); }		

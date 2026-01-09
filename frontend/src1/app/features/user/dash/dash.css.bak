@@ -1,0 +1,17 @@
+/* Ensure the container takes up the full viewport */
+.full-height-sidenav-container {
+    height: 100vh;
+}
+
+/* Make the toolbar fixed at the top */
+.app-toolbar {
+    position: fixed;
+    top: 0;
+    z-index: 100; /* Ensure it is on top of content */
+}
+
+/* Adjust the main content area to prevent it from being hidden behind the fixed toolbar */
+.app-content {
+    /* Set padding-top to the height of the toolbar (e.g., 64px for standard toolbar) */
+    padding-top: 64px; 
+}

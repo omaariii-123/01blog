@@ -1,0 +1,221 @@
+.admin-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* --- Header Section --- */
+.admin-header {
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 24px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.header-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--primary-color);
+}
+
+.admin-header h1 {
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.header-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 0 0 0 44px; /* Align with text start */
+}
+
+/* --- Stats Grid (Dark Cards) --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.stat-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  padding: 24px !important;
+  background-color: var(--bg-card) !important; /* White/Card Color */
+  border: 1px solid var(--border-color);
+  box-shadow: var(--box-shadow) !important;
+}
+
+/* Icon Boxes */
+.stat-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}
+
+.stat-icon-box mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.stat-icon-box.blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.stat-icon-box.green { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.stat-icon-box.red { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: 'Fira Code', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.stat-value.warning-text {
+  color: var(--danger-color);
+}
+
+/* --- Tech Tables (The "Database" Look) --- */
+.table-container {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden; /* Rounds corners of table */
+  background: var(--bg-card);
+}
+
+.tech-table {
+  width: 100%;
+  background: transparent;
+}
+
+/* Header Cells */
+th.mat-header-cell {
+  background-color: #f8fafc; /* Very light grey header */
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Body Cells */
+td.mat-cell {
+  color: var(--text-main);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+/* Special Text Styles */
+.mono-text {
+  font-family: 'Fira Code', monospace;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.highlight-text {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mini-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+/* Badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+  background-color: #f1f5f9;
+  color: var(--text-secondary);
+}
+
+.status-badge.pending {
+  background-color: rgba(234, 179, 8, 0.1); /* Yellow tint */
+  color: #ca8a04; /* Dark yellow text */
+  border-color: rgba(234, 179, 8, 0.2);
+}
+
+.role-badge {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  background: #eff6ff;
+  color: var(--primary-color);
+  border-radius: 4px;
+}
+
+/* Action Buttons */
+.small-btn {
+  font-size: 0.8rem !important;
+  padding: 0 12px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  margin-left: 8px;
+}
+
+.delete-btn {
+  background-color: #fee2e2 !important; /* Very light red */
+  color: #ef4444 !important; /* Red text */
+  box-shadow: none !important;
+}
+
+.text-right {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+/* Tab Overrides */
+.tech-tabs ::ng-deep .mat-mdc-tab-labels {
+  background-color: transparent;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tech-tabs ::ng-deep .mat-mdc-tab {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.tab-icon {
+  margin-right: 8px;
+}

@@ -1,0 +1,9 @@
+.main-toolbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  vertical-align: middle; border: 2px solid rgba(255,255,255,0.5);
+}
+.content-wrapper { padding-top: 80px; padding-bottom: 40px; }

@@ -1,7 +1,224 @@
-/* You can add global styles to this file, and also import other style files */
-body {
-	background: #f3f3f3;
+/* ==========================================================================
+   1. IMPORTS & FONTS
+   ========================================================================== */
+/* UI Font: Inter | Code Font: Fira Code */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* ==========================================================================
+   2. THEME VARIABLES (Midnight Developer Palette)
+   ========================================================================== */
+:root {
+  /* --- Brand Colors --- */
+  --primary-color: #3b82f6;       /* Tech Blue */
+  --primary-hover: #2563eb;
+  --secondary-color: #10b981;     /* Success Green */
+  --danger-color: #ef4444;        /* Error Red */
+  --warn-color: #f59e0b;          /* Warning Amber */
+
+  /* --- Backgrounds --- */
+  --header-bg: #0f172a;           /* Dark Slate (Navbar) */
+  --bg-body: #f1f5f9;             /* Light Slate (Page BG) */
+  --bg-card: #ffffff;             /* White (Cards) */
+  --bg-input: #f8fafc;            /* Very light grey (Inputs) */
+
+  /* --- Text --- */
+  --text-main: #0f172a;           /* Darkest Slate */
+  --text-secondary: #64748b;      /* Muted Slate */
+  --text-inverse: #f8fafc;        /* White text */
+
+  /* --- UI Dimensions & Borders --- */
+  --border-color: #e2e8f0;
+  --border-radius: 6px;           /* Tighter, tech-focused radius */
+  --box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --header-height: 64px;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* ==========================================================================
+   3. GLOBAL RESET & TYPOGRAPHY
+   ========================================================================== */
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased; /* Makes text look crisp */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.025em; /* Tight tracking for modern look */
+  color: var(--text-main);
+  margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ==========================================================================
+   4. ANGULAR MATERIAL OVERRIDES (De-Googling)
+   ========================================================================== */
+
+/* Cards: Sharper, cleaner, lighter shadow */
+.mat-mdc-card {
+  background-color: var(--bg-card) !important;
+  border-radius: var(--border-radius) !important;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--box-shadow) !important;
+}
+
+/* Buttons: Square corners, proper colors */
+.mat-mdc-raised-button.mat-primary, 
+.mat-mdc-flat-button.mat-primary {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-radius: 6px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* Inputs: Modern background style */
+.mat-mdc-form-field-flex {
+  background-color: var(--bg-input) !important;
+  border-radius: var(--border-radius) !important;
+  border: 1px solid var(--border-color);
+}
+/* Hide the default underline ripple for a cleaner look */
+.mdc-line-ripple { display: none !important; } 
+
+/* Tabs: Clean text, no huge ripples */
+.mat-mdc-tab {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   5. BUTTON & ICON FIXES
+   ========================================================================== */
+/* Fix overlap in all buttons */
+button .mat-icon,
+a[mat-button] .mat-icon,
+a[mat-raised-button] .mat-icon,
+a[mat-flat-button] .mat-icon,
+a[mat-stroked-button] .mat-icon {
+  margin-right: 8px; /* Push text away */
+  flex-shrink: 0;    /* Prevent squashing */
+  vertical-align: middle;
+}
+
+/* Fix for custom icon-only buttons */
+button[mat-icon-button] .mat-icon {
+  margin-right: 0 !important;
+}
+
+/* ==========================================================================
+   6. LAYOUT UTILITIES
+   ========================================================================== */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* 3-Column Feed Layout */
+.feed-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 320px;
+  gap: 24px;
+  align-items: start;
+  max-width: 1400px;
+  margin: 32px auto;
+  padding: 0 24px;
+}
+
+/* Responsive Feed */
+@media (max-width: 1024px) {
+  .feed-layout { grid-template-columns: 200px 1fr; } /* Hide right column */
+}
+@media (max-width: 768px) {
+  .feed-layout { grid-template-columns: 1fr; } /* Stack everything */
+}
+
+/* Sticky Sidebar */
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+}
+
+/* Split Screen (Login/Register) */
+.split-screen {
+  display: flex;
+  min-height: 100vh;
+}
+.split-left {
+  flex: 1;
+  background-color: var(--header-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.split-right {
+  flex: 1;
+  background-color: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* ==========================================================================
+   7. TEXT & BADGE UTILITIES
+   ========================================================================== */
+.text-code {
+  font-family: 'Fira Code', monospace;
+  color: var(--primary-color);
+  font-size: 0.9em;
+}
+
+.text-muted {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.status-badge.success { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+.status-badge.warning { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+.status-badge.danger  { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+/* ==========================================================================
+   8. CUSTOM SCROLLBAR (Dark Slate Theme)
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-body);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+  border: 2px solid var(--bg-body); /* Creates padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

@@ -1,0 +1,37 @@
+<div class="app-layout">
+
+  <!-- Navigation Header -->
+  <mat-toolbar color="primary" class="navbar">
+    <div class="container" style="display: flex; align-items: center; width: 100%; gap: 16px;">
+      <!-- Logo / Home Link -->
+      <a (click)="goHome()" class="brand-logo" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <span class="logo-icon">01</span> Blog
+      </a>
+
+      <span class="spacer"></span>
+
+      <!-- Navigation Actions -->
+      <nav class="nav-actions">
+
+        @if (!auth.user()) {
+        <!-- Guest View -->
+        <button mat-button (click)="goLogin()">Sign in</button>
+        <button mat-flat-button (click)="goSignUp()">Sign up</button>
+        } @else {
+        <!-- Logged In View -->
+        <button mat-stroked-button (click)="goProfile()">Profile</button>
+        <button mat-stroked-button (click)="auth.logout()">Log out</button>
+        }
+
+      </nav>
+    </div>
+  </mat-toolbar>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+</div>

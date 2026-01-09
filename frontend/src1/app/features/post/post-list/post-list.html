@@ -1,0 +1,38 @@
+<section class="mat-post-list-container">
+    <h2 class="mat-h2">Recent Posts</h2>
+
+    <div class="post-grid">
+        
+        @for (post of posts; track post.id) {
+            <mat-card class="post-card">
+                
+                <mat-card-header>
+                    <div mat-card-avatar class="example-header-image"></div>
+                    <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
+                </mat-card-header>
+
+                <img mat-card-image class="post-image-placeholder" 
+                     [alt]="post.title">
+
+                <mat-card-content>
+                    <p class="post-excerpt limited-lines">
+                        {{ post.content }}
+                    </p>
+                </mat-card-content>
+
+                <mat-card-actions class="post-actions">
+                    <a mat-button color="primary" >READ MORE</a>
+                    
+                    <button mat-icon-button aria-label="Like this post">
+                        <mat-icon>favorite</mat-icon>
+                    </button>
+                    <button mat-icon-button aria-label="Share this post">
+                        <mat-icon>share</mat-icon>
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        } @empty {
+            <p>No posts found. Please check back later!</p>
+        }
+        </div>
+</section>
