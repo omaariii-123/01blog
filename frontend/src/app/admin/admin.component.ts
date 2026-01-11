@@ -49,13 +49,14 @@ export class AdminComponent implements OnInit {
         // Real implementation should call adminService.getReports(), adminService.getUsers()
 
         // Placeholder until backend API confirmed or implemented completely for stats
-        this.totalUsers = 150;
-        this.totalPosts = 432;
-        this.pendingReports = 5;
+        this.totalUsers = 0;
+        this.totalPosts = 0;
+        this.pendingReports = 0;
 
         this.adminService.getReports().subscribe(reports => {
             this.reports = reports;
-            this.pendingReports = reports.filter((r: any) => r.status === 'PENDING').length;
+            this.reports.forEach((r)=> console.log(r))
+            this.pendingReports = reports.length;
         });
 
         this.adminService.getUsers().subscribe(users => {

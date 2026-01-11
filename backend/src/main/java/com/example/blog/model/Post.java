@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-
+import org.hibernate.annotations.Formula;
 import java.time.LocalDateTime;
 
 @Data
@@ -20,7 +20,18 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Formula("(SELECT COUNT(*) FROM likes AS pl WHERE pl.post_id = id)")
+    private Long likeCount;
 
+    public Long getLikeCount() {
+        return likeCount;
+    }
+    @Formula("(SELECT COUNT(*) FROM comments AS c WHERE c.post_id = id)")
+    private Long commentCount;
+
+    public Long getCommentCount() {
+        return commentCount;
+    }
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User author;

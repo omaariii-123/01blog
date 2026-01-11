@@ -1,7 +1,8 @@
 import {
   Title
-} from "./chunk-JQL3FPEO.js";
-import "./chunk-SS4PN3YF.js";
+} from "./chunk-IIEOVN5Q.js";
+import "./chunk-JT6FX6R4.js";
+import "./chunk-HRWRE7B7.js";
 import {
   HashLocationStrategy,
   Location,
@@ -10,11 +11,10 @@ import {
   PathLocationStrategy,
   PlatformNavigation,
   ViewportScroller
-} from "./chunk-6JIQBFWF.js";
-import "./chunk-ORPTXEQH.js";
+} from "./chunk-7HHHB4YH.js";
 import {
   LOCATION_INITIALIZED
-} from "./chunk-6MUULIHW.js";
+} from "./chunk-CHM6IJNF.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   ApplicationRef,
@@ -89,7 +89,7 @@ import {
   ɵɵloadQuery,
   ɵɵqueryRefresh,
   ɵɵsanitizeUrlOrResourceUrl
-} from "./chunk-JNH6GZ6T.js";
+} from "./chunk-7OTOPILM.js";
 import {
   BehaviorSubject,
   EMPTY,
@@ -122,9 +122,9 @@ import {
   takeUntil,
   tap,
   throwError
-} from "./chunk-B5YQ4VSR.js";
+} from "./chunk-TG3TAQP6.js";
 
-// ../node_modules/@angular/router/fesm2022/_router-chunk.mjs
+// node_modules/@angular/router/fesm2022/_router-chunk.mjs
 var PRIMARY_OUTLET = "primary";
 var RouteTitleKey = Symbol("RouteTitle");
 var ParamsAsMap = class {
@@ -4797,7 +4797,7 @@ function validateCommands(commands) {
   }
 }
 
-// ../node_modules/@angular/router/fesm2022/_router_module-chunk.mjs
+// node_modules/@angular/router/fesm2022/_router_module-chunk.mjs
 var RouterLink = class _RouterLink {
   router;
   route;
@@ -5852,7 +5852,7 @@ function provideRouterInitializer() {
   }];
 }
 
-// ../node_modules/@angular/router/fesm2022/router.mjs
+// node_modules/@angular/router/fesm2022/router.mjs
 function mapToCanMatch(providers) {
   return providers.map((provider) => (...params) => inject(provider).canMatch(...params));
 }

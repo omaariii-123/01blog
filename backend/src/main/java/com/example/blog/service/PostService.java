@@ -61,7 +61,6 @@ public class PostService {
     }
 
     public void deletePost(Long postId) {
-        // Add check if user is author or admin
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUsername();
         User user = userRepository.findByUsername(username).orElseThrow();
@@ -82,6 +81,8 @@ public class PostService {
                 .mediaUrl(post.getMediaUrl())
                 .mediaType(post.getMediaType())
                 .createdAt(post.getCreatedAt())
+                .likeCount(post.getLikeCount())
+                .commentCount(post.getCommentCount())
                 .build();
     }
 }

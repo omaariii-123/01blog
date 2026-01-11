@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostService, Post } from '../post.service';
 import { MatCardModule } from '@angular/material/card';
@@ -70,7 +70,7 @@ import { PostCardComponent } from '../shared/post-card/post-card.component';
             }
 
             <div class="posts-list">
-                @for (post of posts; track post.id) {
+                @for (post of posts(); track post.id) {
                     <app-post-card [post]="post"></app-post-card>
                 } @empty {
                      <div class="empty-state">
@@ -319,32 +319,23 @@ import { PostCardComponent } from '../shared/post-card/post-card.component';
   `]
 })
 export class HomeComponent implements OnInit {
-  posts: Post[] = [];
+  posts: WritableSignal<Post[]> = signal([]);
   newPostContent = '';
 
   authService = inject(AuthService);
   private postService = inject(PostService);
 
   ngOnInit() {
+   
     this.loadPosts();
   }
 
-  loadPosts() {
-    this.postService.getAllPosts().subscribe(posts => {
-      // Map and init basic state
-      this.posts = posts.map(p => ({
-        ...p,
-        likeCount: p.likeCount || 0,
-        likedByCurrentUser: false,
-        comments: []
-      }));
-
-      // Enrich posts (likes, comments)
-      this.posts.forEach(post => {
-        this.postService.getLikeCount(post.id).subscribe(count => post.likeCount = count);
-      });
-    });
-  }
+ loadPosts() {
+  this.postService.getAllPosts().subscribe((posts) => {
+    this.posts.set(posts);
+    console.log(posts);
+  });
+}
 
   createPost() {
     if (!this.newPostContent.trim()) return;
@@ -352,7 +343,7 @@ export class HomeComponent implements OnInit {
     this.postService.createPost(this.newPostContent).subscribe({
       next: (post) => {
         const newPost: Post = { ...post, likeCount: 0, likedByCurrentUser: false, comments: [] };
-        this.posts.unshift(newPost);
+        this.posts().unshift(newPost);
         this.newPostContent = '';
       },
       error: (err) => {

@@ -10,6 +10,7 @@ export interface Post {
     mediaType?: 'IMAGE' | 'VIDEO';
     createdAt: string;
     likeCount: number;
+    commentCount: number;
     likedByCurrentUser: boolean;
     comments?: Comment[]; // Optional for UI expansion
 }

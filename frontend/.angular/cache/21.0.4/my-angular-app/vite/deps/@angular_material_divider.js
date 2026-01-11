@@ -1,10 +1,11 @@
 import {
   coerceBooleanProperty
-} from "./chunk-3MVWJ2GK.js";
-import "./chunk-GMAZ63K4.js";
+} from "./chunk-42QFQP6S.js";
+import "./chunk-N4DOILP3.js";
+import "./chunk-ZDCANUSI.js";
 import {
   BidiModule
-} from "./chunk-I3UVAOOL.js";
+} from "./chunk-UF6LMTPH.js";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,10 +18,10 @@ import {
   ɵɵdefineComponent,
   ɵɵdefineInjector,
   ɵɵdefineNgModule
-} from "./chunk-JNH6GZ6T.js";
-import "./chunk-B5YQ4VSR.js";
+} from "./chunk-7OTOPILM.js";
+import "./chunk-TG3TAQP6.js";
 
-// ../node_modules/@angular/material/fesm2022/divider.mjs
+// node_modules/@angular/material/fesm2022/divider.mjs
 var MatDivider = class _MatDivider {
   get vertical() {
     return this._vertical;

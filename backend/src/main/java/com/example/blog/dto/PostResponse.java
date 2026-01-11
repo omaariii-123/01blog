@@ -18,4 +18,6 @@ public class PostResponse {
     private String mediaUrl;
     private String mediaType;
     private LocalDateTime createdAt;
+    private Long likeCount;
+    private Long commentCount;
 }
