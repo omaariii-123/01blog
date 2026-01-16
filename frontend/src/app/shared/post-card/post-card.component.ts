@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -67,7 +67,9 @@ import { CommentsComponent } from '../comments/comments';
       </mat-card-actions>
 
       @if (showComments()) {
-        <app-comments [postId]="post.id"></app-comments>
+        <app-comments [postId]="post.id" 
+        (commentAdded) = "post.commentCount += 1" >
+        </app-comments>
       }
     </mat-card>
   `,

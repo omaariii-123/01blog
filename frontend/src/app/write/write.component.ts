@@ -40,24 +40,43 @@ import { PostService } from '../post.service';
               <textarea matInput [(ngModel)]="content" name="content" rows="12" placeholder="Share your knowledge... Markdown is supported."></textarea>
             </mat-form-field>
 
-            <div class="media-upload-area" (click)="fileInput.click()" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
-               <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" accept="image/*,video/*">
+            <label 
+              class="media-upload-area" 
+              (drop)="onDrop($event)" 
+              (dragover)="onDragOver($event)">
+               
+               <input 
+                  type="file" 
+                  #fileInput 
+                  (change)="onFileSelected($event)" 
+                  class="visually-hidden" 
+                  accept="image/*,video/*">
+
                <div class="upload-placeholder" *ngIf="!selectedFile">
                   <mat-icon>cloud_upload</mat-icon>
                   <p>Drag and drop media here, or click to select</p>
                </div>
+               
                <div class="file-preview" *ngIf="selectedFile">
                   <mat-icon>check_circle</mat-icon>
                   <p>{{ selectedFile.name }}</p>
-                  <button mat-icon-button (click)="removeFile($event)"><mat-icon>close</mat-icon></button>
+                  
+                  <button mat-icon-button (click)="$event.preventDefault(); removeFile($event)">
+                    <mat-icon>close</mat-icon>
+                  </button>
                </div>
-            </div>
+            </label>
           </form>
         </mat-card-content>
 
         <mat-card-actions align="end">
           <button mat-button (click)="cancel()">Cancel</button>
-          <button mat-raised-button color="primary" (click)="publish()" [disabled]="!content">Publish to Block</button>
+          <button mat-raised-button 
+                  color="primary" 
+                  (click)="publish()" 
+                  [disabled]="!content && !selectedFile">
+              Publish to Block
+          </button>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -80,11 +99,8 @@ import { PostService } from '../post.service';
       margin-top: 24px;
     }
 
-    .full-width {
-      width: 100%;
-    }
-
     .media-upload-area {
+      display: block; /* Important for label to behave like a div */
       border: 2px dashed #e0e0e0;
       border-radius: 8px;
       padding: 40px;
@@ -92,11 +108,28 @@ import { PostService } from '../post.service';
       cursor: pointer;
       transition: all 0.2s;
       background: #fafafa;
+      position: relative; /* Context for absolute positioning if needed */
     }
 
     .media-upload-area:hover {
       border-color: var(--primary-color);
       background: #f0f7ff;
+    }
+
+    /* THE MAGIC FIX: 
+       Keeps input in the DOM (readable by screen readers & browsers)
+       but makes it invisible. Bypasses "display:none" security blocks.
+    */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .upload-placeholder {
@@ -134,6 +167,7 @@ export class WriteComponent {
         const file = event.target.files[0];
         if (file) {
             this.selectedFile = file;
+            event.target.value = '';
         }
     }
 
@@ -160,14 +194,13 @@ export class WriteComponent {
     }
 
     publish() {
-        if (!this.content) return;
+        if (!this.content && !this.selectedFile) return;
 
-        // Note: API currently takes content string. Media handle would need multipart support or separate upload.
-        // Assuming createPost just takes description for now based on previous code.
-        // If backend supports title/media, we'd append them here. 
-        // Implementing basic publish for now.
+        const finalContent = this.title 
+            ? `# ${this.title}\n\n${this.content}` 
+            : this.content;
 
-        this.postService.createPost(this.content).subscribe({
+        this.postService.createPost(finalContent, this.selectedFile || undefined).subscribe({
             next: () => {
                 this.router.navigate(['/']);
             },
@@ -176,4 +209,4 @@ export class WriteComponent {
             }
         });
     }
-}
+} 

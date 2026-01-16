@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { PostService, Post } from '../post.service';
@@ -78,7 +78,7 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
             <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" animationDuration="0ms">
                 <mat-tab label="Timeline">
                     <div class="tab-content">
-                        @for (post of posts; track post.id) {
+                        @for (post of posts(); track post.id) {
                             <app-post-card [post]="post"></app-post-card>
                         } @empty {
                             <div class="empty-state">
@@ -282,7 +282,7 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
 })
 export class BlockComponent implements OnInit {
   username: string = '';
-  posts: Post[] = [];
+  posts : WritableSignal<Post[]> = signal([]);
   isOwner: boolean = false;
   isFollowing: boolean = false;
   followersCount: number = 0;
@@ -298,7 +298,7 @@ export class BlockComponent implements OnInit {
   private dialog = inject(MatDialog);
 
   get mediaPosts() {
-    return this.posts.filter(p => p.mediaUrl);
+    return this.posts().filter(p => p.mediaUrl);
   }
 
   ngOnInit() {
@@ -318,21 +318,13 @@ export class BlockComponent implements OnInit {
   }
 
   loadProfileData() {
-    // Load posts
     this.postService.getUserPosts(this.username).subscribe({
       next: (posts: Post[]) => {
-        // Init like/comments for display
-        this.posts = posts.map((p: Post) => ({ ...p, likeCount: p.likeCount || 0, likedByCurrentUser: false, comments: [] }));
-
-        // Fetch like counts for posts
-        this.posts.forEach((post: Post) => {
-          this.postService.getLikeCount(post.id).subscribe((count: number) => post.likeCount = count);
-        });
+        this.posts.set( posts);
       },
       error: (e: any) => console.error(e)
     });
 
-    // Load User Profile Object (if needed for ID)
     this.userService.getUserProfile(this.username).subscribe((profile: any) => {
       this.userProfile = profile;
       if (profile) {

@@ -1,4 +1,4 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,14 +13,15 @@ import { PostService, Comment } from '../../post.service';
   template: `
     <div class="comments-container">
       <div class="comment-input-area">
-        <input 
+        <input #box
           type="text" 
-          [(ngModel)]="newComment" 
+          [value]="newComment()"
+          (input)="newComment.set(box.value)"
           placeholder="Write a comment..." 
           (keyup.enter)="addComment()"
           [disabled]="isSubmitting()">
         
-        <button mat-icon-button color="primary" (click)="addComment()" [disabled]="!newComment || isSubmitting()">
+        <button mat-icon-button color="primary" (click)="addComment()" [disabled]="!newComment() || isSubmitting()">
             @if (isSubmitting()) {
                 <mat-spinner diameter="20"></mat-spinner>
             } @else {
@@ -84,7 +85,7 @@ import { PostService, Comment } from '../../post.service';
 })
 export class CommentsComponent {
   @Input({ required: true }) postId!: number;
-  
+  @Output() commentAdded = new EventEmitter<void>();
   private postService = inject(PostService);
   
   // Signals for Reactive State
@@ -93,7 +94,7 @@ export class CommentsComponent {
   isSubmitting = signal(false);
   hasMore = signal(true); // Assuming there might be more initially
   
-  newComment = '';
+  newComment = signal('');
   page = 0;
   readonly PAGE_SIZE = 5;
 
@@ -110,7 +111,6 @@ export class CommentsComponent {
     this.postService.getComments(this.postId).subscribe({
       next: (newComments) => {
         this.comments.update(current => [...current, ...newComments]);
-        
         // If we got fewer comments than requested, we reached the end
         if (newComments.length < this.PAGE_SIZE) {
             this.hasMore.set(false);
@@ -124,15 +124,16 @@ export class CommentsComponent {
   }
 
   addComment() {
-    if (!this.newComment.trim()) return;
+    if (!this.newComment().trim()) return;
     
     this.isSubmitting.set(true);
     
-    this.postService.addComment(this.postId, this.newComment).subscribe({
+    this.postService.addComment(this.postId, this.newComment()).subscribe({
       next: (comment) => {
         // Optimistic: Add to TOP of list
         this.comments.update(c => [comment, ...c]);
-        this.newComment = '';
+        this.commentAdded.emit();
+        this.newComment.set('');
         this.isSubmitting.set(false);
       },
       error: () => this.isSubmitting.set(false)
