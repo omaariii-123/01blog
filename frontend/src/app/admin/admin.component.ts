@@ -76,6 +76,7 @@ export class AdminComponent implements OnInit {
     }
 
     banEntity(report: any) {
+        /*
         if (report.reportedUser) {
             this.toggleBan(report.reportedUser);
         } else if (report.reportedPost) {
@@ -83,12 +84,18 @@ export class AdminComponent implements OnInit {
                 this.reports = this.reports.filter(r => r.id !== report.id);
                 this.loadDashboardData(); // Refresh stats
             });
-        }
+        }*/
     }
 
     toggleBan(user: any) {
         this.adminService.banUser(user.id).subscribe(() => {
             user.banned = !user.banned;
         });
+    }
+    hidePost(reportedPostId : number){
+        this.adminService.hidePost(reportedPostId).subscribe(()=>{console.log("hide done!")});
+    }
+    unHidePost(reportedPostId : number){
+        this.adminService.unHidePost(reportedPostId).subscribe(()=>{console.log("unhide done!")});
     }
 }

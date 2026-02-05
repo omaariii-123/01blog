@@ -4,6 +4,7 @@
 /home/yomari/01blog/backend/src/main/java/com/example/blog/config/DataInitializer.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/config/JwtAuthenticationFilter.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/config/SecurityConfig.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/config/WebConfig.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/AdminController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/AuthenticationController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/InteractionController.java
@@ -16,6 +17,7 @@
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/PostRequest.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/PostResponse.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/RegisterRequest.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/dto/ReportResponse.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Comment.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Post.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/PostLike.java

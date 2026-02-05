@@ -41,6 +41,9 @@ public class Post {
 
     private String mediaUrl;
     private String mediaType; // IMAGE or VIDEO
+    
+    @Builder.Default
+    private Boolean hidden = false;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -41,6 +41,12 @@ export class AdminService {
     deletePost(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/posts/${id}`);
     }
+    hidePost(id : number){
+         return this.http.put<Report>(`${this.apiUrl}/posts/hide/${id}`, {})
+    }
+    unHidePost(id : number){
+         return this.http.put<Report>(`${this.apiUrl}/posts/unhide/${id}`, {})
+    }
 
     createReport(userId: number | null, postId: number | null, reason: string): Observable<void> {
         const params: any = { reason };

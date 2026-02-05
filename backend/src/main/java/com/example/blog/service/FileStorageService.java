@@ -22,11 +22,9 @@ public class FileStorageService {
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
-
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
         return fileName;
     }
 }

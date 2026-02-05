@@ -12,6 +12,7 @@ export interface Post {
     likeCount: number;
     commentCount: number;
     likedByCurrentUser: boolean;
+    hidden : boolean;
     comments?: Comment[]; // Optional for UI expansion
 }
 

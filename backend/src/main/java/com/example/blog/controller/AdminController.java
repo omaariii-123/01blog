@@ -1,5 +1,6 @@
 package com.example.blog.controller;
 
+import com.example.blog.dto.ReportResponse;
 import com.example.blog.model.Report;
 import com.example.blog.model.User;
 import com.example.blog.service.AdminService;
@@ -35,7 +36,7 @@ public class AdminController {
 
     @GetMapping("/reports")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Report>> getAllReports() {
+    public ResponseEntity<List<ReportResponse>> getAllReports() {
         return ResponseEntity.ok(adminService.getAllReports());
     }
 
@@ -50,6 +51,18 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         adminService.deletePost(id);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/posts/hide/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> hidePost(@PathVariable Long id) {
+        adminService.hidePost(id);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/posts/unhide/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> unHidePost(@PathVariable Long id) {
+        adminService.unHidePost(id);
         return ResponseEntity.ok().build();
     }
 }

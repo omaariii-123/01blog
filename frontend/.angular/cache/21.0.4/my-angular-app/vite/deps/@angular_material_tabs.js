@@ -15,7 +15,7 @@ import {
   MAT_RIPPLE_GLOBAL_OPTIONS,
   MatRipple,
   _StructuralStylesLoader
-} from "./chunk-B3F4J3VN.js";
+} from "./chunk-2OBOKB2Z.js";
 import "./chunk-NGX5KMVR.js";
 import "./chunk-QFSFE6V5.js";
 import {

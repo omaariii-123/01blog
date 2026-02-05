@@ -49,7 +49,7 @@ import { CommentsComponent } from '../comments/comments';
         <p class="post-text">{{ post.description }}</p>
         @if (post.mediaUrl) {
             <div class="media-container">
-                <img [src]="'/uploads/' + post.mediaUrl" alt="Post media">
+                <img [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Post media">
             </div>
         }
       </mat-card-content>

@@ -1,5 +1,6 @@
 package com.example.blog.service;
 
+import com.example.blog.dto.ReportResponse;
 import com.example.blog.model.Post;
 import com.example.blog.model.Report;
 import com.example.blog.model.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +28,6 @@ public class AdminService {
     
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
-
-    public List<Report> getAllReports() {
-        return reportRepository.findAll();
     }
 
     public void banUser(Long userId) {
@@ -63,4 +61,38 @@ public class AdminService {
 
         reportRepository.save(reportBuilder.build());
     }
+    public List<ReportResponse> getAllReports() {
+    return reportRepository.findAll().stream()
+        .map(this::mapToReportResponse)
+        .collect(Collectors.toList());
+}
+
+private ReportResponse mapToReportResponse(Report report) {
+    return ReportResponse.builder()
+        .id(report.getId())
+        .reason(report.getReason())
+        .createdAt(report.getCreatedAt())
+        
+        // Safely extract Reporter info
+        .reporterId(report.getReporter().getId())
+        .reporterUsername(report.getReporter().getUsername())
+        
+        // Handle potential nulls (e.g., if reportedUser is null)
+        .reportedUserId(report.getReportedUser() != null ? report.getReportedUser().getId() : null)
+        .reportedUsername(report.getReportedUser() != null ? report.getReportedUser().getUsername() : null)
+        
+        .reportedPostId(report.getReportedPost() != null ? report.getReportedPost().getId() : null)
+        .hidden(report.getReportedPost().getHidden())
+        .build();
+}
+public void hidePost( Long id){
+    Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    post.setHidden(true);
+    postRepository.save(post);
+}
+public void unHidePost( Long id){
+    Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    post.setHidden(false);
+    postRepository.save(post);
+}
 }

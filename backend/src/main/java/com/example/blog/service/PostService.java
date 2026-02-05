@@ -42,15 +42,20 @@ public class PostService {
                 .mediaUrl(mediaUrl)
                 .mediaType(mediaType)
                 .build();
-
         post = postRepository.save(post);
         return mapToResponse(post);
     }
 
-    public List<PostResponse> getAllPosts() {
-        return postRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public List<PostResponse> getAllPosts(boolean isAdmin) {
+       List<Post> posts;
+    
+    if (isAdmin) {
+        posts = postRepository.findAllByOrderByCreatedAtDesc(); // Admins see all
+    } else {
+        posts = postRepository.findByHiddenFalseOrderByCreatedAtDesc(); // Users see only safe posts
+    }
+    
+    return posts.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     public List<PostResponse> getUserPosts(String username) {

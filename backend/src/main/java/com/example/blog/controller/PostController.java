@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,8 +33,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        return ResponseEntity.ok(service.getAllPosts());
+    public ResponseEntity<List<PostResponse>> getAllPosts(Authentication authentication) {
+    boolean isAdmin = authentication.getAuthorities().stream().anyMatch(grantedAuthority -> {System.out.println(grantedAuthority);return grantedAuthority.getAuthority().equals("ROLE_ADMIN");});
+        return ResponseEntity.ok(service.getAllPosts(isAdmin));
     }
 
     @GetMapping("/user/{username}")
@@ -45,4 +48,5 @@ public class PostController {
         service.deletePost(id);
         return ResponseEntity.ok().build();
     }
+    
 }

@@ -202,45 +202,33 @@ export class HomeComponent implements OnInit {
 
   loadPosts() {
     this.postService.getAllPosts().subscribe((posts) => {
+        posts.forEach(post => console.log(post.hidden))
       this.posts.set(posts);
     });
   }
 
-  // 2. Handle File Selection
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile.set(file);
-
-      // Create Preview URL
       const reader = new FileReader();
       reader.onload = () => this.imagePreview.set(reader.result as string);
-      reader.readAsDataURL(file);
-      
-      // Reset input value to allow re-selecting the same file
+      reader.readAsDataURL(file);     
       event.target.value = '';
     }
   }
 
-  // 3. Remove File
   removeFile() {
     this.selectedFile.set(null);
     this.imagePreview.set(null);
   }
 
   createPost() {
-    // 4. Check if we have Text OR File
     if (!this.newPostContent().trim() && !this.selectedFile()) return;
-
-    // 5. Send both to Service
     this.postService.createPost(this.newPostContent(), this.selectedFile() || undefined).subscribe({
       next: (post) => {
         const newPost: Post = { ...post, likeCount: 0, likedByCurrentUser: false, comments: [] };
-        
-        // Update Feed
         this.posts.update((posts) => [newPost, ...posts]);
-        
-        // Reset Form
         this.newPostContent.set('');
         this.removeFile();
       },
