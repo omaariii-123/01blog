@@ -80,6 +80,9 @@
               <button mat-stroked-button color="primary" class="small-btn" (click)="resolveReport(report)">
                 Dismiss
               </button>
+              <button mat-stroked-button color="primary" class="small-btn" (click)="deletePost(report.reportedPostId)">
+                Delete
+              </button>
               @if (!report.hidden){
               <button mat-stroked-button color="primary" class="small-btn" (click)="hidePost(report.reportedPostId)">
                 Hide

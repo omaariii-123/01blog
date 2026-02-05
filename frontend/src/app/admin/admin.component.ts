@@ -98,4 +98,7 @@ export class AdminComponent implements OnInit {
     unHidePost(reportedPostId : number){
         this.adminService.unHidePost(reportedPostId).subscribe(()=>{console.log("unhide done!")});
     }
+    deletePost(id: number){
+        this.adminService.deletePost(id).subscribe(()=> console.log("post deleted !"));
+    }
 }
