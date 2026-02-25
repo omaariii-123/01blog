@@ -50,16 +50,10 @@ function normalizePassiveListenerOptions(options) {
   return supportsPassiveEventListeners() ? options : !!options.capture;
 }
 
-// node_modules/@angular/cdk/fesm2022/_test-environment-chunk.mjs
-function _isTestEnvironment() {
-  return typeof __karma__ !== "undefined" && !!__karma__ || typeof jasmine !== "undefined" && !!jasmine || typeof jest !== "undefined" && !!jest || typeof Mocha !== "undefined" && !!Mocha;
-}
-
 export {
   _getShadowRoot,
   _getFocusedElementPierceShadowDom,
   _getEventTarget,
-  normalizePassiveListenerOptions,
-  _isTestEnvironment
+  normalizePassiveListenerOptions
 };
-//# sourceMappingURL=chunk-GWBU7KI5.js.map
+//# sourceMappingURL=chunk-XA6252L2.js.map

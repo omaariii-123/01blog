@@ -6,10 +6,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PostService, Post } from '../../post.service';
 import { AdminService } from '../../admin.service';
 import { ReportDialogComponent } from '../report-dialog/report-dialog.component';
-import { CommentsComponent } from '../comments/comments'; 
+import { CommentsComponent } from '../comments/comments';
+import { SecureMediaPipe } from '../secure-media.pipe';
+import { AuthService } from '../../auth.service';
 
 @Component({
     selector: 'app-post-card',
@@ -21,7 +24,9 @@ import { CommentsComponent } from '../comments/comments';
         MatIconModule,
         MatMenuModule,
         RouterModule,
-        CommentsComponent 
+        FormsModule,
+        CommentsComponent,
+        SecureMediaPipe
     ],
     template: `
     <mat-card class="post-card">
@@ -38,6 +43,12 @@ import { CommentsComponent } from '../comments/comments';
             <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
+            @if (post.author === authService.currentUser()) {
+                <button mat-menu-item (click)="startEdit()">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit Post</span>
+                </button>
+            }
             <button mat-menu-item (click)="onReport()">
                 <mat-icon>flag</mat-icon>
                 <span>Report Post</span>
@@ -50,23 +61,28 @@ import { CommentsComponent } from '../comments/comments';
       </mat-card-header>
 
       <mat-card-content>
-        <p class="post-text">{{ post.description }}</p>
-        @if (post.mediaType === "IMAGE") {
+        @if (isEditing()) {
+            <div class="edit-container" style="margin-bottom: 16px;">
+                <textarea [(ngModel)]="editDescription" rows="3" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-color);"></textarea>
+                <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+                    <button mat-button (click)="cancelEdit()">Cancel</button>
+                    <button mat-raised-button color="primary" (click)="saveEdit()">Save Edit</button>
+                </div>
+            </div>
+        } @else {
+            <p class="post-text">{{ post.description }}</p>
+        }
+        
+        @if (post.mediaUrl) {
             <div class="media-container">
-                <img [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Post media">
-            </div>      
-        }@else {
-        <div class="media-container">
-        <video 
-            [src]="'http://localhost:8080/uploads/' + post.mediaUrl" 
-            width="100%" 
-            controls 
-            autoplay 
-            muted 
-            loop 
-            playsinline>
-            Your browser does not support the video tag.
-        </video>        </div>
+                @if (post.mediaType === 'VIDEO') {
+                    <video [src]="post.mediaUrl | secureMedia" controls width="100%" playsinline preload="metadata">
+                        Your browser does not support the video tag.
+                    </video>
+                } @else {
+                    <img [src]="post.mediaUrl | secureMedia" alt="Post media" style="width: 100%; border-radius: 8px;">
+                }
+            </div>
         }
       </mat-card-content>
 
@@ -84,7 +100,7 @@ import { CommentsComponent } from '../comments/comments';
 
       @if (showComments()) {
         <app-comments [postId]="post.id" 
-        (commentAdded) = "post.commentCount += 1" >
+        (commentAdded)="post.commentCount = post.commentCount + 1" >
         </app-comments>
       }
     </mat-card>
@@ -95,10 +111,31 @@ export class PostCardComponent {
     @Output() deletedPost = new EventEmitter<Post>();
     
     showComments = signal(false);
+    isEditing = signal(false);
+    editDescription = signal('');
 
     private postService = inject(PostService);
     private adminService = inject(AdminService);
     private dialog = inject(MatDialog);
+    authService = inject(AuthService);
+
+    startEdit() {
+        this.editDescription.set(this.post.description);
+        this.isEditing.set(true);
+    }
+
+    cancelEdit() {
+        this.isEditing.set(false);
+    }
+
+    saveEdit() {
+        this.postService.updatePost(this.post.id, this.editDescription()).subscribe({
+            next: (updated) => {
+                this.post.description = updated.description;
+                this.isEditing.set(false);
+            }
+        });
+    }
 
     toggleLike() {
         const previousState = this.post.likedByCurrentUser;
@@ -128,7 +165,10 @@ export class PostCardComponent {
             }
         });
     }
+
     onDelete() {
-        this.postService.deletePost(this.post.id).subscribe(()=> this.deletedPost.emit(this.post));
+        if (confirm('Are you sure you want to delete this post?')) {
+            this.postService.deletePost(this.post.id).subscribe(()=> this.deletedPost.emit(this.post));
+        }
     }
-}
+}   

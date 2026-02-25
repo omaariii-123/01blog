@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PostCardComponent } from '../shared/post-card/post-card.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.component';
+import { SecureMediaPipe } from '../shared/secure-media.pipe';
 
 @Component({
   selector: 'app-block',
@@ -26,11 +27,11 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
     MatTooltipModule,
     RouterModule,
     PostCardComponent,
-    MatDialogModule
+    MatDialogModule,
+    SecureMediaPipe
   ],
   template: `
     <div class="profile-container">
-        <!-- Banner Image -->
         <div class="profile-banner">
             <div class="banner-overlay"></div>
         </div>
@@ -57,7 +58,9 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
 
                 <div class="profile-actions">
                     @if (isOwner) {
-                        
+                        <button mat-stroked-button color="primary">
+                            <mat-icon>edit</mat-icon> Edit Profile
+                        </button>
                     } @else if (username) {
                         <button mat-raised-button [color]="isFollowing ? 'basic' : 'primary'" (click)="toggleFollow()">
                             {{ isFollowing ? 'Unsubscribe' : 'Subscribe' }}
@@ -70,7 +73,6 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
             </div>
         </div>
 
-        <!-- Content Tabs -->
         <div class="profile-content">
             <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" animationDuration="0ms">
                 <mat-tab label="Timeline">
@@ -88,22 +90,13 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
                 <mat-tab label="Media">
                     <div class="tab-content media-grid">
                          @for (post of mediaPosts; track post.id) {
-                            @if (post.mediaType === 'IMAGE'){
                              <div class="media-item">
-                                 <img [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Media">
+                                 @if (post.mediaType === 'VIDEO') {
+                                     <video [src]="post.mediaUrl | secureMedia" muted autoplay loop playsinline class="media-thumb"></video>
+                                 } @else {
+                                     <img [src]="post.mediaUrl | secureMedia" alt="Media" class="media-thumb">
+                                 }
                              </div>
-                            }@else {
-                            <div class="media-item">
-                                 <video [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Media"
-                                        width="100%" 
-                                        controls 
-                                        autoplay 
-                                        muted 
-                                        loop 
-                                        playsinline>
-                                         Your browser does not support the video tag. ></video>
-                             </div>
-                            }
                          } @empty {
                             <div class="empty-state">
                                 <mat-icon>image</mat-icon>
@@ -158,7 +151,7 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
         padding: 0 20px;
         position: relative;
         text-align: center;
-        margin-top: -60px; /* Pull up avatar */
+        margin-top: -60px;
     }
 
     .avatar-container {
@@ -248,9 +241,12 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
         background: #f0f0f0;
         border-radius: 8px;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
-    .media-item img {
+    .media-thumb {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -315,7 +311,7 @@ export class BlockComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || '';
       if (!this.username) {
-        this.router.navigate(['/']); // Redirect if no username
+        this.router.navigate(['/']); 
         return;
       }
       this.checkOwnership();
@@ -338,15 +334,10 @@ export class BlockComponent implements OnInit {
     this.userService.getUserProfile(this.username).subscribe((profile: any) => {
       this.userProfile = profile;
       if (profile) {
-        // Load follow stats
         this.userService.getFollowersCount(this.username).subscribe((count: number) => this.followersCount = count);
         this.userService.getFollowingCount(this.username).subscribe((count: number) => this.followingCount = count);
 
-        // Check follow status if not owner
         if (!this.isOwner && this.authService.currentUser()) {
-          // Assuming isFollowing takes username or ID? Service usually takes ID or username.
-          // Checking user service, it likely uses ID or has a method for username.
-          // Let's assume username for now based on previous usage, or ID from profile.
           this.userService.isFollowing(profile.id).subscribe((res: { isFollowing: boolean }) => this.isFollowing = res.isFollowing);
         }
       }

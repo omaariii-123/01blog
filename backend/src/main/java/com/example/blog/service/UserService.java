@@ -1,6 +1,8 @@
 package com.example.blog.service;
 
+import com.example.blog.model.Notification;
 import com.example.blog.model.User;
+import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -15,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
 
-   
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username)
@@ -40,6 +42,14 @@ public class UserService {
 
         currentUser.getFollowing().add(targetUser);
         userRepository.save(currentUser);
+
+        // Notify target user about the new follower
+        Notification notif = Notification.builder()
+                .user(targetUser)
+                .message(currentUser.getUsername() + " subscribed to your block!")
+                .read(false)
+                .build();
+        notificationRepository.save(notif);
     }
 
     @Transactional

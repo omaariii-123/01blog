@@ -8,6 +8,7 @@
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/AdminController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/AuthenticationController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/InteractionController.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/controller/NotificationController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/PostController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/controller/UserController.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/AuthenticationRequest.java
@@ -19,12 +20,14 @@
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/RegisterRequest.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/ReportResponse.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Comment.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/model/Notification.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Post.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/PostLike.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Report.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Role.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/User.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/repository/CommentRepository.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/repository/NotificationRepository.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/repository/PostLikeRepository.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/repository/PostRepository.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/repository/ReportRepository.java

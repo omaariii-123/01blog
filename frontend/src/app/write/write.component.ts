@@ -37,14 +37,14 @@ import { PostService } from '../post.service';
 
             <mat-form-field appearance="outline" class="content-field">
               <mat-label>What are you learning today?</mat-label>
-              <textarea matInput [(ngModel)]="content" name="content" rows="12" placeholder="Share your knowledge... Markdown is supported."></textarea>
+              <textarea matInput [(ngModel)]="content" name="content" rows="12" placeholder="Share your knowledge..."></textarea>
             </mat-form-field>
 
             <label 
               class="media-upload-area" 
               (drop)="onDrop($event)" 
               (dragover)="onDragOver($event)">
-               
+                
                <input 
                   type="file" 
                   #fileInput 
@@ -82,77 +82,15 @@ import { PostService } from '../post.service';
     </div>
   `,
     styles: [`
-    .write-container {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .write-card {
-      padding: 24px;
-    }
-
-    .write-form {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      margin-top: 24px;
-    }
-
-    .media-upload-area {
-      display: block; /* Important for label to behave like a div */
-      border: 2px dashed #e0e0e0;
-      border-radius: 8px;
-      padding: 40px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: #fafafa;
-      position: relative; /* Context for absolute positioning if needed */
-    }
-
-    .media-upload-area:hover {
-      border-color: var(--primary-color);
-      background: #f0f7ff;
-    }
-
-    /* THE MAGIC FIX: 
-       Keeps input in the DOM (readable by screen readers & browsers)
-       but makes it invisible. Bypasses "display:none" security blocks.
-    */
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .upload-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-secondary);
-    }
-
-    .upload-placeholder mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-    }
-
-    .file-preview {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        color: var(--success-color);
-    }
+    .write-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    .write-card { padding: 24px; }
+    .write-form { display: flex; flex-direction: column; gap: 24px; margin-top: 24px; }
+    .media-upload-area { display: block; border: 2px dashed #e0e0e0; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fafafa; position: relative; }
+    .media-upload-area:hover { border-color: var(--primary-color); background: #f0f7ff; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-secondary); }
+    .upload-placeholder mat-icon { font-size: 48px; width: 48px; height: 48px; }
+    .file-preview { display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--success-color); }
   `]
 })
 export class WriteComponent {
@@ -209,4 +147,4 @@ export class WriteComponent {
             }
         });
     }
-} 
+}

@@ -3,10 +3,12 @@ package com.example.blog.service;
 import com.example.blog.dto.CommentRequest;
 import com.example.blog.dto.CommentResponse;
 import com.example.blog.model.Comment;
+import com.example.blog.model.Notification;
 import com.example.blog.model.Post;
 import com.example.blog.model.PostLike;
 import com.example.blog.model.User;
 import com.example.blog.repository.CommentRepository;
+import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.PostLikeRepository;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserRepository;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,7 @@ public class InteractionService {
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
 
     private User getCurrentUser() {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
@@ -34,6 +38,7 @@ public class InteractionService {
         return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Transactional
     public CommentResponse addComment(Long postId, CommentRequest request) {
         User user = getCurrentUser();
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
@@ -46,6 +51,16 @@ public class InteractionService {
 
         comment = commentRepository.save(comment);
 
+        // Notify post author if someone else commented
+        if (!post.getAuthor().getId().equals(user.getId())) {
+            Notification notif = Notification.builder()
+                    .user(post.getAuthor())
+                    .message(user.getUsername() + " commented on your post.")
+                    .read(false)
+                    .build();
+            notificationRepository.save(notif);
+        }
+
         return CommentResponse.builder()
                 .id(comment.getId())
                 .postId(post.getId())
@@ -54,6 +69,7 @@ public class InteractionService {
                 .createdAt(comment.getCreatedAt())
                 .build();
     }
+
     public List<CommentResponse> getComments(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
         return commentRepository.findByPostOrderByCreatedAtAsc(post).stream()
@@ -67,6 +83,7 @@ public class InteractionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void toggleLike(Long postId) {
         User user = getCurrentUser();
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
@@ -80,6 +97,16 @@ public class InteractionService {
                     .user(user)
                     .build();
             postLikeRepository.save(like);
+
+            // Notify post author if someone else liked it
+            if (!post.getAuthor().getId().equals(user.getId())) {
+                Notification notif = Notification.builder()
+                        .user(post.getAuthor())
+                        .message(user.getUsername() + " liked your post.")
+                        .read(false)
+                        .build();
+                notificationRepository.save(notif);
+            }
         }
     }
 

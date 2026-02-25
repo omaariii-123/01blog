@@ -45,17 +45,12 @@ export class AdminComponent implements OnInit {
     }
 
     loadDashboardData() {
-        // Mock data for initial visual check (API implementation varies)
-        // Real implementation should call adminService.getReports(), adminService.getUsers()
-
-        // Placeholder until backend API confirmed or implemented completely for stats
         this.totalUsers = 0;
         this.totalPosts = 0;
         this.pendingReports = 0;
 
         this.adminService.getReports().subscribe(reports => {
             this.reports = reports;
-            this.reports.forEach((r)=> console.log(r))
             this.pendingReports = reports.length;
         });
 
@@ -66,39 +61,44 @@ export class AdminComponent implements OnInit {
     }
 
     resolveReport(report: any) {
-        // Since we don't have a resolve endpoint, we might just need to delete the report or mark it resolved if backend supported it.
-        // For now, assuming "Dismiss" means deleting the report/ignoring it? 
-        // Or if backend has status update. AdminService doesn't show update status method.
-        // Let's assume we can't do much without backend support for status change, 
-        // but user asked for "report not working", meaning submission.
-        // If this is for "Dismiss", maybe we just remove it from UI?
+        if (!confirm('Are you sure you want to dismiss this report?')) return;
         this.reports = this.reports.filter(r => r.id !== report.id);
     }
 
     banEntity(report: any) {
-        
+        if (!confirm('Are you sure you want to ban/unban this user?')) return;
         if (report.reportedUser) {
             this.toggleBan(report.reportedUser);
         } else if (report.reportedPost) {
             this.adminService.deletePost(report.reportedPost.id).subscribe(() => {
                 this.reports = this.reports.filter(r => r.id !== report.id);
-                this.loadDashboardData(); // Refresh stats
+                this.loadDashboardData(); 
             });
         }
     }
 
     toggleBan(user: any) {
+        if (!confirm(`Are you sure you want to ${user.banned ? 'unban' : 'ban'} this user?`)) return;
         this.adminService.banUser(user.id).subscribe(() => {
             user.banned = !user.banned;
         });
     }
+
     hidePost(reportedPostId : number){
+        if (!confirm('Are you sure you want to hide this post?')) return;
         this.adminService.hidePost(reportedPostId).subscribe(()=>{console.log("hide done!")});
     }
+
     unHidePost(reportedPostId : number){
+        if (!confirm('Are you sure you want to unhide this post?')) return;
         this.adminService.unHidePost(reportedPostId).subscribe(()=>{console.log("unhide done!")});
     }
+
     deletePost(id: number){
-        this.adminService.deletePost(id).subscribe(()=> console.log("post deleted !"));
+        if (!confirm('Are you sure you want to permanently delete this post?')) return;
+        this.adminService.deletePost(id).subscribe(()=> {
+            console.log("post deleted!");
+            this.reports = this.reports.filter(r => r.reportedPostId !== id);
+        });
     }
 }

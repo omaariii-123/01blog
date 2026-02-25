@@ -13,7 +13,7 @@ export interface Post {
     commentCount: number;
     likedByCurrentUser: boolean;
     hidden : boolean;
-    comments?: Comment[]; // Optional for UI expansion
+    comments?: Comment[];
 }
 
 export interface Comment {
@@ -28,13 +28,17 @@ export interface Comment {
     providedIn: 'root'
 })
 export class PostService {
-    private apiUrl = 'http://localhost:8080/api/v1/posts'; // Validated backend route
-    private interactionUrl = 'http://localhost:8080/api/v1/interactions'; // Need to verify interaction route
+    private apiUrl = 'http://localhost:8080/api/v1/posts';
+    private interactionUrl = 'http://localhost:8080/api/v1/interactions';
 
     private http = inject(HttpClient);
 
     getAllPosts(): Observable<Post[]> {
         return this.http.get<Post[]>(this.apiUrl);
+    }
+
+    getFeed(): Observable<Post[]> {
+        return this.http.get<Post[]>(`${this.apiUrl}/feed`);
     }
 
     getUserPosts(username: string): Observable<Post[]> {
@@ -51,6 +55,10 @@ export class PostService {
         if (file) formData.append('file', file);
 
         return this.http.post<Post>(this.apiUrl, formData);
+    }
+
+    updatePost(id: number, description: string): Observable<Post> {
+        return this.http.put<Post>(`${this.apiUrl}/${id}?description=${encodeURIComponent(description)}`, {});
     }
 
     getComments(postId: number): Observable<Comment[]> {
