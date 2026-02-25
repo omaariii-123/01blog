@@ -51,10 +51,22 @@ import { CommentsComponent } from '../comments/comments';
 
       <mat-card-content>
         <p class="post-text">{{ post.description }}</p>
-        @if (post.mediaUrl) {
+        @if (post.mediaType === "IMAGE") {
             <div class="media-container">
                 <img [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Post media">
-            </div>
+            </div>      
+        }@else {
+        <div class="media-container">
+        <video 
+            [src]="'http://localhost:8080/uploads/' + post.mediaUrl" 
+            width="100%" 
+            controls 
+            autoplay 
+            muted 
+            loop 
+            playsinline>
+            Your browser does not support the video tag.
+        </video>        </div>
         }
       </mat-card-content>
 

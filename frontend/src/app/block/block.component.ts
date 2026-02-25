@@ -35,7 +35,6 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
             <div class="banner-overlay"></div>
         </div>
 
-        <!-- Profile Header Stats -->
         <div class="profile-header">
             <div class="avatar-container">
                  <div class="profile-avatar" [style.background-image]="'url(https://api.dicebear.com/9.x/initials/svg?seed=' + username + ')'"></div>
@@ -58,9 +57,7 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
 
                 <div class="profile-actions">
                     @if (isOwner) {
-                        <button mat-stroked-button color="primary">
-                            <mat-icon>edit</mat-icon> Edit Profile
-                        </button>
+                        
                     } @else if (username) {
                         <button mat-raised-button [color]="isFollowing ? 'basic' : 'primary'" (click)="toggleFollow()">
                             {{ isFollowing ? 'Unsubscribe' : 'Subscribe' }}
@@ -91,9 +88,22 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
                 <mat-tab label="Media">
                     <div class="tab-content media-grid">
                          @for (post of mediaPosts; track post.id) {
+                            @if (post.mediaType === 'IMAGE'){
                              <div class="media-item">
                                  <img [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Media">
                              </div>
+                            }@else {
+                            <div class="media-item">
+                                 <video [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Media"
+                                        width="100%" 
+                                        controls 
+                                        autoplay 
+                                        muted 
+                                        loop 
+                                        playsinline>
+                                         Your browser does not support the video tag. ></video>
+                             </div>
+                            }
                          } @empty {
                             <div class="empty-state">
                                 <mat-icon>image</mat-icon>

@@ -35,4 +35,5 @@
 /home/yomari/01blog/backend/src/main/java/com/example/blog/service/InteractionService.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/service/JwtService.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/service/PostService.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/service/ReportService.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/service/UserService.java
