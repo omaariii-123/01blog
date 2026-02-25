@@ -1,4 +1,4 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import { Component, Input, Output, inject, signal, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,6 +42,10 @@ import { CommentsComponent } from '../comments/comments';
                 <mat-icon>flag</mat-icon>
                 <span>Report Post</span>
             </button>
+            <button mat-menu-item (click)="onDelete()">
+                <mat-icon>delete</mat-icon>
+                <span>Delete Post</span>
+            </button>
         </mat-menu>
       </mat-card-header>
 
@@ -76,6 +80,7 @@ import { CommentsComponent } from '../comments/comments';
 })
 export class PostCardComponent {
     @Input({ required: true }) post!: Post;
+    @Output() deletedPost = new EventEmitter<Post>();
     
     showComments = signal(false);
 
@@ -110,5 +115,8 @@ export class PostCardComponent {
                 });
             }
         });
+    }
+    onDelete() {
+        this.postService.deletePost(this.post.id).subscribe(()=> this.deletedPost.emit(this.post));
     }
 }

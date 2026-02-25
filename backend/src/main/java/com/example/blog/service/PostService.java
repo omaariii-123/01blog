@@ -50,9 +50,9 @@ public class PostService {
        List<Post> posts;
     
     if (isAdmin) {
-        posts = postRepository.findAllByOrderByCreatedAtDesc(); // Admins see all
+        posts = postRepository.findAllByOrderByCreatedAtDesc();
     } else {
-        posts = postRepository.findByHiddenFalseOrderByCreatedAtDesc(); // Users see only safe posts
+        posts = postRepository.findByHiddenFalseOrderByCreatedAtDesc();
     }
     
     return posts.stream().map(this::mapToResponse).collect(Collectors.toList());
@@ -68,10 +68,9 @@ public class PostService {
     public void deletePost(Long postId) {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow();
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (!post.getAuthor().getUsername().equals(username) && !user.getRole().name().equals("ADMIN")) {
+        if (!post.getAuthor().getUsername().equals(username)) {
             throw new RuntimeException("Not authorized");
         }
 

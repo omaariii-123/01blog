@@ -43,7 +43,7 @@ public class Post {
     private String description;
 
     private String mediaUrl;
-    private String mediaType; // IMAGE or VIDEO
+    private String mediaType;
     
     @Builder.Default
     private Boolean hidden = false;

@@ -92,7 +92,7 @@ import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.com
                     <div class="tab-content media-grid">
                          @for (post of mediaPosts; track post.id) {
                              <div class="media-item">
-                                 <img [src]="'/uploads/' + post.mediaUrl" alt="Media">
+                                 <img [src]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Media">
                              </div>
                          } @empty {
                             <div class="empty-state">

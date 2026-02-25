@@ -86,7 +86,7 @@ import { PostCardComponent } from '../shared/post-card/post-card.component';
 
             <div class="posts-list">
                 @for (post of posts(); track post.id) {
-                    <app-post-card [post]="post"></app-post-card>
+                    <app-post-card [post]="post" (deletedPost)="removePost($event)"></app-post-card>
                 } @empty {
                      <div class="empty-state">
                         <mat-icon>post_add</mat-icon>
@@ -236,5 +236,8 @@ export class HomeComponent implements OnInit {
         console.error('Error creating post', err);
       }
     });
+  }
+  removePost(post : Post){
+        this.posts.update((posts)=> posts.filter((p)=> p.id != post.id))
   }
 }

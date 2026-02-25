@@ -35,7 +35,7 @@ export class AdminComponent implements OnInit {
     totalPosts = 0;
     pendingReports = 0;
 
-    reportColumns = ['id', 'reporter', 'reason', 'status', 'actions'];
+    reportColumns = ['id', 'reporter', 'reason', 'status', 'time', 'actions'];
     userColumns = ['username', 'role', 'actions'];
 
     private adminService = inject(AdminService);
@@ -76,7 +76,7 @@ export class AdminComponent implements OnInit {
     }
 
     banEntity(report: any) {
-        /*
+        
         if (report.reportedUser) {
             this.toggleBan(report.reportedUser);
         } else if (report.reportedPost) {
@@ -84,7 +84,7 @@ export class AdminComponent implements OnInit {
                 this.reports = this.reports.filter(r => r.id !== report.id);
                 this.loadDashboardData(); // Refresh stats
             });
-        }*/
+        }
     }
 
     toggleBan(user: any) {
