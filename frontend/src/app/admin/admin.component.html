@@ -1,115 +1,76 @@
-<div class="admin-layout">
-  
-  <header class="admin-header">
-    <div class="header-title">
-      <mat-icon class="header-icon">admin_panel_settings</mat-icon>
-      <h1>System Control</h1>
+<div class="admin-container">
+  <header class="admin-top-bar">
+    <div class="brand">
+      <mat-icon>terminal</mat-icon>
+      <span>SYSTEM_ROOT@01BLOG: /CONTROL_PANEL</span>
     </div>
-    <p class="header-subtitle">Overview of platform metrics and moderation queues.</p>
+    <div class="system-status">
+      <span class="status-pulse"></span>
+      <span class="status-text">SYSTEM ONLINE</span>
+    </div>
   </header>
 
-  <div class="stats-grid">
-    <mat-card class="stat-card">
-      <div class="stat-icon-box blue">
-        <mat-icon>group</mat-icon>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Total Users</span>
-        <span class="stat-value">{{ totalUsers }}</span>
-      </div>
-    </mat-card>
-
-    <mat-card class="stat-card">
-      <div class="stat-icon-box green">
-        <mat-icon>article</mat-icon>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Total Posts</span>
-        <span class="stat-value">{{ totalPosts }}</span>
-      </div>
-    </mat-card>
-
-    <mat-card class="stat-card">
-      <div class="stat-icon-box red">
-        <mat-icon>warning</mat-icon>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Pending Reports</span>
-        <span class="stat-value warning-text">{{ pendingReports }}</span>
-      </div>
-    </mat-card>
+  <div class="hud-grid">
+    <div class="hud-card blue">
+      <div class="hud-label">TOTAL_USERS</div>
+      <div class="hud-value">{{ totalUsers }}</div>
+      <mat-icon class="hud-icon">people_outline</mat-icon>
+    </div>
+    <div class="hud-card green">
+      <div class="hud-label">ACTIVE_POSTS</div>
+      <div class="hud-value">{{ totalPosts }}</div>
+      <mat-icon class="hud-icon">article</mat-icon>
+    </div>
+    <div class="hud-card" [class.warn-blink]="pendingReports > 0">
+      <div class="hud-label">PENDING_REPORTS</div>
+      <div class="hud-value">{{ pendingReports }}</div>
+      <mat-icon class="hud-icon">gpp_maybe</mat-icon>
+    </div>
   </div>
 
-  <mat-tab-group class="tech-tabs" mat-stretch-tabs="false" mat-align-tabs="start">
+  <mat-tab-group class="console-tabs" mat-stretch-tabs="false">
     
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">flag</mat-icon> Reports
+        <mat-icon>flag</mat-icon> INCIDENT_LOGS
       </ng-template>
       
-      <div class="table-container mat-elevation-z0">
-        <table mat-table [dataSource]="reports" class="tech-table">
-          
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="reports" class="console-table">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef> ID </th>
-            <td mat-cell *matCellDef="let report" class="mono-text"> #{{report.id}} </td>
+            <td mat-cell *matCellDef="let report" class="mono"> #{{report.id}} </td>
           </ng-container>
 
           <ng-container matColumnDef="reporter">
-            <th mat-header-cell *matHeaderCellDef> REPORTER </th>
-            <td mat-cell *matCellDef="let report" class="highlight-text"> {{report.reporterUsername}} </td>
+            <th mat-header-cell *matHeaderCellDef> SOURCE </th>
+            <td mat-cell *matCellDef="let report"> {{report.reporterUsername}} </td>
           </ng-container>
 
           <ng-container matColumnDef="reason">
-            <th mat-header-cell *matHeaderCellDef> REASON </th>
-            <td mat-cell *matCellDef="let report"> {{report.reason}} </td>
+            <th mat-header-cell *matHeaderCellDef> VIOLATION </th>
+            <td mat-cell *matCellDef="let report"> 
+              <span class="reason-tag">{{report.reason}}</span>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> STATUS </th>
-            <td mat-cell *matCellDef="let report"> 
-              <span class="status-badge" [class.pending]="report.status === 'PENDING'">
-                {{report.status}}
-              </span>
+            <th mat-header-cell *matHeaderCellDef> STATE </th>
+            <td mat-cell *matCellDef="let report">
+              <span class="badge" [class.pending]="report.status === 'PENDING'">{{report.status}}</span>
             </td>
           </ng-container>
-          <ng-container matColumnDef="time">
-            <th mat-header-cell *matHeaderCellDef> Time </th>
-            <td mat-cell *matCellDef="let report"> 
-              <span class="status-badge" [class.pending]="report.status === 'PENDING'">
-                
-                {{report.createdAt | date}}
 
-              </span>
-            </td>
+          <ng-container matColumnDef="time">
+            <th mat-header-cell *matHeaderCellDef> TIMESTAMP </th>
+            <td mat-cell *matCellDef="let report" class="mono"> {{report.createdAt | date:'HH:mm:ss'}} </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="text-right"> ACTIONS </th>
+            <th mat-header-cell *matHeaderCellDef class="text-right"> EXECUTE </th>
             <td mat-cell *matCellDef="let report" class="text-right">
-              <button mat-stroked-button color="primary" class="small-btn" (click)="resolveReport(report)">
-                Dismiss
-              </button>
-              <button mat-stroked-button color="primary" class="small-btn" (click)="deletePost(report.reportedPostId)">
-                Delete
-              </button>
-              @if (!report.hidden){
-              <button mat-stroked-button color="primary" class="small-btn" (click)="hidePost(report.reportedPostId)">
-                Hide
-              </button>} @else {
-              <button mat-stroked-button color="primary" class="small-btn" (click)="unHidePost(report.reportedPostId)">
-                Unhide
-              </button>
-            }
-             @if (report.banned){
-              <button mat-flat-button color="warn" class="small-btn delete-btn" (click)="banEntity(report)">
-                Unban
-              </button>
-            }@else {
-              <button mat-flat-button color="warn" class="small-btn delete-btn" (click)="banEntity(report)">
-                ban
-              </button>
-            }>
+              <button mat-button class="action-btn" (click)="resolveReport(report)">DISMISS</button>
+              <button mat-flat-button color="warn" class="danger-btn" (click)="banEntity(report)">RESOLVE_BAN</button>
             </td>
           </ng-container>
 
@@ -118,38 +79,33 @@
         </table>
       </div>
     </mat-tab>
-    
+
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">people</mat-icon> Users
+        <mat-icon>manage_accounts</mat-icon> USER_REGISTRY
       </ng-template>
-
-      <div class="table-container mat-elevation-z0">
-        <table mat-table [dataSource]="users" class="tech-table">
-          
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="users" class="console-table">
           <ng-container matColumnDef="username">
-            <th mat-header-cell *matHeaderCellDef> USERNAME </th>
-            <td mat-cell *matCellDef="let user" class="highlight-text"> 
-              <img [src]="'https://api.dicebear.com/9.x/initials/svg?seed=' + user.username" class="mini-avatar">
+            <th mat-header-cell *matHeaderCellDef> USER_IDENTIFIER </th>
+            <td mat-cell *matCellDef="let user" class="user-cell"> 
+              <img [src]="'https://api.dicebear.com/9.x/initials/svg?seed=' + user.username" class="avatar-mini">
               {{user.username}} 
             </td>
           </ng-container>
 
           <ng-container matColumnDef="role">
-            <th mat-header-cell *matHeaderCellDef> ROLE </th>
+            <th mat-header-cell *matHeaderCellDef> ACCESS_LEVEL </th>
             <td mat-cell *matCellDef="let user"> 
-              <span class="role-badge">{{user.role}}</span>
+              <span class="role-chip" [class.admin]="user.role === 'ADMIN'">{{user.role}}</span>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="text-right"> ACTIONS </th>
+            <th mat-header-cell *matHeaderCellDef class="text-right"> COMMANDS </th>
             <td mat-cell *matCellDef="let user" class="text-right">
-              <button mat-stroked-button 
-                      [color]="user.banned ? 'accent' : 'warn'" 
-                      class="small-btn"
-                      (click)="toggleBan(user)">
-                {{ user.banned ? 'Unban User' : 'Ban User' }}
+              <button mat-stroked-button [color]="user.banned ? 'primary' : 'warn'" (click)="toggleBan(user)">
+                {{ user.banned ? 'REVOKE_BAN' : 'TERMINATE_ACCESS' }}
               </button>
             </td>
           </ng-container>
@@ -159,6 +115,5 @@
         </table>
       </div>
     </mat-tab>
-
   </mat-tab-group>
 </div>
