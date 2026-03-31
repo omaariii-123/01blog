@@ -108,3 +108,36 @@
   50% { border-color: transparent; }
   100% { border-color: #ef4444; }
 }
+/* =========================================
+   MOBILE RESPONSIVENESS (Media Queries)
+   ========================================= */
+@media (max-width: 768px) {
+  .admin-layout {
+    padding: 16px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr; /* Stack the cards */
+    gap: 16px;
+  }
+
+  .admin-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-subtitle {
+    margin-left: 0;
+    font-size: 0.95rem;
+    margin-top: 8px;
+  }
+
+  /* Make the table horizontally scrollable on phones */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tech-table {
+    min-width: 700px; /* Prevents columns from crushing together */
+  }
+}

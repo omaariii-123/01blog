@@ -204,3 +204,28 @@
     display: none; /* Turn "Create" button into just a "+" icon */ 
     }
   }
+  /* =========================================
+   MOBILE RESPONSIVENESS (Media Queries)
+   ========================================= */
+@media (max-width: 768px) {
+  .search-block {
+    display: none; /* Hide search bar on mobile */
+  }
+
+  .user-name {
+    display: none; /* Hide username, keep avatar */
+  }
+
+  .action-btn {
+    padding: 0 10px;
+  }
+
+  /* Hide the text inside the "Write Article" button, keep the icon */
+  .action-btn .nav-item {
+    font-size: 0; 
+  }
+  
+  .action-btn mat-icon {
+    margin-right: 0;
+  }
+}
