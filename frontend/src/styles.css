@@ -222,3 +222,25 @@ button[mat-icon-button] .mat-icon {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+/* ==========================================================================
+   9. SNACKBAR NOTIFICATIONS
+   ========================================================================== */
+/* Success Green (Using your theme's secondary color) */
+.success-snackbar .mdc-snackbar__surface {
+  background-color: var(--secondary-color) !important;
+}
+.success-snackbar .mdc-snackbar__label,
+.success-snackbar .mat-mdc-button .mdc-button__label,
+.success-snackbar .mat-mdc-button.mat-unthemed {
+  color: var(--text-inverse) !important;
+}
+
+/* Error Red (Using your theme's danger color) */
+.error-snackbar .mdc-snackbar__surface {
+  background-color: var(--danger-color) !important;
+}
+.error-snackbar .mdc-snackbar__label,
+.error-snackbar .mat-mdc-button .mdc-button__label,
+.error-snackbar .mat-mdc-button.mat-unthemed {
+  color: var(--text-inverse) !important;
+}

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PostService, Post } from '../post.service';
 import { UserService } from '../user.service';
 import { AuthService } from '../auth.service';
@@ -20,6 +21,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatButtonModule,
     MatIconModule,
     MatTabsModule,
@@ -86,8 +88,34 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" animationDuration="0ms">
           <mat-tab label="Timeline">
             <div class="tab-content">
-              @for (post of posts(); track post.id) {
-              <app-post-card [post]="post"></app-post-card>
+              @if (isOwner) {
+              <mat-card class="create-post-card">
+                <mat-card-content>
+                  <textarea
+                    class="create-post-input"
+                    [(ngModel)]="newPostText"
+                    placeholder="What's on your mind?"
+                    rows="3"
+                  >
+                  </textarea>
+                  <div class="create-actions">
+                    <button mat-icon-button color="primary" matTooltip="Attach Media">
+                      <mat-icon>image</mat-icon>
+                    </button>
+                    <span class="spacer"></span>
+                    <button
+                      mat-raised-button
+                      color="primary"
+                      [disabled]="!newPostText.trim()"
+                      (click)="createPost()"
+                    >
+                      Post
+                    </button>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+              } @for (post of posts(); track post.id) {
+              <app-post-card [post]="post" (deletedPost)="onPostDeleted($event)"></app-post-card>
               } @empty {
               <div class="empty-state">
                 <mat-icon>article</mat-icon>
@@ -306,9 +334,37 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         opacity: 0.5;
         margin-bottom: 16px;
       }
-      /* =========================================
-       MOBILE RESPONSIVENESS (Media Queries)
-       ========================================= */
+
+      .create-post-card {
+        margin-bottom: 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+      .create-post-input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color, #e0e0e0);
+        resize: none;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+        font-family: inherit;
+        font-size: 1rem;
+        background: transparent;
+        color: var(--text-primary);
+      }
+      .create-post-input:focus {
+        outline: none;
+        border-color: var(--primary-color, #3f51b5);
+      }
+      .create-actions {
+        display: flex;
+        align-items: center;
+      }
+      .spacer {
+        flex: 1 1 auto;
+      }
+
       @media (max-width: 600px) {
         .profile-header {
           margin-top: -40px;
@@ -329,7 +385,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         }
 
         .media-grid {
-          grid-template-columns: repeat(2, 1fr); /* 2x2 grid on mobile */
+          grid-template-columns: repeat(2, 1fr);
         }
       }
     `,
@@ -343,6 +399,8 @@ export class BlockComponent implements OnInit {
   followersCount: number = 0;
   followingCount: number = 0;
   userProfile: any = null;
+
+  newPostText: string = '';
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -397,6 +455,29 @@ export class BlockComponent implements OnInit {
         }
       }
     });
+  }
+
+  createPost() {
+    if (!this.newPostText.trim()) return;
+
+    this.postService.createPost(this.newPostText).subscribe({
+      next: (createdPost: Post) => {
+        const newPost: Post = {
+          ...createdPost,
+          likeCount: createdPost.likeCount || 0,
+          commentCount: createdPost.commentCount || 0,
+          likedByCurrentUser: createdPost.likedByCurrentUser || false,
+          comments: createdPost.comments || [],
+        };
+        this.posts.update((currentPosts) => [newPost, ...currentPosts]);
+        this.newPostText = '';
+      },
+      error: (e: any) => console.error('Error creating post', e),
+    });
+  }
+
+  onPostDeleted(deletedPost: Post) {
+    this.posts.update((currentPosts) => currentPosts.filter((p) => p.id !== deletedPost.id));
   }
 
   toggleFollow() {

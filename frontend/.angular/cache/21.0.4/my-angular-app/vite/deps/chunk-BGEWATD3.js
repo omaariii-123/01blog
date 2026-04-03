@@ -1,4 +1,7 @@
 import {
+  BreakpointObserver
+} from "./chunk-DJQRI7AR.js";
+import {
   _getEventTarget,
   _getFocusedElementPierceShadowDom,
   _getShadowRoot,
@@ -8,18 +11,15 @@ import {
   _VisuallyHiddenLoader
 } from "./chunk-FVX3JGJO.js";
 import {
-  BreakpointObserver
-} from "./chunk-KCO3Y5MK.js";
-import {
   _CdkPrivateStyleLoader
 } from "./chunk-BSL5DBY7.js";
+import {
+  Platform
+} from "./chunk-VDMFU5HR.js";
 import {
   coerceElement,
   coerceNumberProperty
 } from "./chunk-QCPFLWXP.js";
-import {
-  Platform
-} from "./chunk-VDMFU5HR.js";
 import {
   APP_ID,
   DOCUMENT,
@@ -2439,4 +2439,4 @@ export {
   removeAriaReferencedId,
   AriaDescriber
 };
-//# sourceMappingURL=chunk-EG752MCA.js.map
+//# sourceMappingURL=chunk-BGEWATD3.js.map

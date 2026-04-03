@@ -8,6 +8,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
 import { PostCardComponent } from '../shared/post-card/post-card.component';
+import { UserService } from '../user.service';
+import { SuggestedUsersComponent } from '../suggestedUsers/SuggestedUsersComponent';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +22,7 @@ import { PostCardComponent } from '../shared/post-card/post-card.component';
     RouterModule,
     FormsModule,
     PostCardComponent,
+    SuggestedUsersComponent,
   ],
   template: `
     <div class="feed-layout">
@@ -143,27 +146,10 @@ import { PostCardComponent } from '../shared/post-card/post-card.component';
         </div>
       </main>
 
-      <aside class="sidebar right-sidebar">
-        <mat-card class="discovery-card">
-          <mat-card-header>
-            <mat-card-title>Suggested Blocks</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="suggestion-list">
-              <div class="suggestion-item">
-                <div
-                  class="avatar-mini"
-                  style="background-image: url(https://api.dicebear.com/9.x/initials/svg?seed=Alice)"
-                ></div>
-                <div class="info">
-                  <span class="name">Alice Dev</span>
-                  <span class="handle">@alice</span>
-                </div>
-                <button mat-icon-button color="primary"><mat-icon>person_add</mat-icon></button>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
+      <aside class="right-sidebar">
+        <div class="aside-card">
+          <app-suggested-users></app-suggested-users>
+        </div>
       </aside>
     </div>
   `,
@@ -371,6 +357,8 @@ export class HomeComponent implements OnInit {
 
   authService = inject(AuthService);
   private postService = inject(PostService);
+  userService = inject(UserService);
+  page = 0;
 
   ngOnInit() {
     this.loadPosts();

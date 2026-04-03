@@ -101,11 +101,11 @@ public class PostService {
         java.util.Set<User> feedAuthors = new java.util.HashSet<>(user.getFollowing());
         feedAuthors.add(user);
 
-        if (feedAuthors.size() == 1) {
+        /*if (feedAuthors.size() == 1) {
             return postRepository.findByHiddenFalseOrderByCreatedAtDesc().stream()
                     .map(this::mapToResponse)
                     .collect(Collectors.toList());
-        }
+        }*/
 
         return postRepository.findByAuthorInAndHiddenFalseOrderByCreatedAtDesc(feedAuthors).stream()
                 .map(this::mapToResponse)
@@ -120,11 +120,10 @@ public class PostService {
     }
 
     public void deletePost(Long postId) {
-        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUsername();
+        UserDetails principle = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (!post.getAuthor().getUsername().equals(username)) {
+        if (!post.getAuthor().getUsername().equals(principle.getUsername())) {
             throw new RuntimeException("Not authorized");
         }
 

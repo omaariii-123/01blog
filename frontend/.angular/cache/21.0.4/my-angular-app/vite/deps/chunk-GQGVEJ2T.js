@@ -2,15 +2,15 @@ import {
   SharedResizeObserver
 } from "./chunk-RIPEY37C.js";
 import {
-  coerceBooleanProperty
-} from "./chunk-42QFQP6S.js";
-import {
   ObserversModule,
   _IdGenerator
-} from "./chunk-EG752MCA.js";
+} from "./chunk-BGEWATD3.js";
 import {
   _animationsDisabled
-} from "./chunk-KCO3Y5MK.js";
+} from "./chunk-DJQRI7AR.js";
+import {
+  coerceBooleanProperty
+} from "./chunk-42QFQP6S.js";
 import {
   Platform
 } from "./chunk-VDMFU5HR.js";
@@ -1450,4 +1450,4 @@ export {
   MatFormField,
   MatFormFieldModule
 };
-//# sourceMappingURL=chunk-CY4EAM2L.js.map
+//# sourceMappingURL=chunk-GQGVEJ2T.js.map

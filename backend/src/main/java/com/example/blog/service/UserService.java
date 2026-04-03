@@ -5,12 +5,21 @@ import com.example.blog.model.User;
 import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.blog.dto.UserDto;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +87,13 @@ public class UserService {
     public long getFollowingCount(String username) {
         User user = getUserByUsername(username);
         return user.getFollowing().size();
+    }
+
+    public Page<UserDto> getSuggestedUsers(Pageable pageable) {
+        User user = getCurrentUser();
+        List<Long> excluded = user.getFollowing().stream().map(u -> u.getId()).collect(Collectors.toList());
+        excluded.add(user.getId());
+        return userRepository.findByIdNotIn(excluded, pageable)
+                .map(u -> new UserDto(u.getUsername(), u.getId(), u.getRole().toString()));
     }
 }

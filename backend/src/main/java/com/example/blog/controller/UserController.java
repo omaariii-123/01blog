@@ -1,11 +1,13 @@
 package com.example.blog.controller;
 
+import com.example.blog.dto.UserDto;
 import com.example.blog.model.User;
 import com.example.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 @RestController
@@ -32,7 +34,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/follow")
+    @DeleteMapping("/{id}/unfollow")
     public ResponseEntity<Void> unfollowUser(@PathVariable Long id) {
         userService.unfollowUser(id);
         return ResponseEntity.ok().build();
@@ -52,5 +54,10 @@ public class UserController {
     @GetMapping("/{username}/following/count")
     public ResponseEntity<Long> getFollowingCount(@PathVariable String username) {
         return ResponseEntity.ok(userService.getFollowingCount(username));
+    }
+
+    @GetMapping("/suggested")
+    public Page<UserDto> getSuggestedUsers(Pageable pageable) {
+        return userService.getSuggestedUsers(pageable);
     }
 }
