@@ -37,7 +37,6 @@ public class SecurityConfig {
                                 .cors(Customizer.withDefaults())
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers(new AntPathRequestMatcher("/uploads/**")).permitAll()
                                                 .requestMatchers("/api/v1/auth/**", "/h2-console/**").permitAll()
                                                 .requestMatchers("/error").permitAll()
                                                 .anyRequest().authenticated())

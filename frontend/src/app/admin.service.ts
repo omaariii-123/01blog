@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Post } from './post.service';
+import { Post, PostService } from './post.service';
 
 export interface User {
     id: number;
@@ -31,6 +31,7 @@ export interface Report {
 export class AdminService {
     private apiUrl = 'http://localhost:8080/api/v1/admin';
     private http = inject(HttpClient);
+    private postService = inject(PostService);
 
     getUsers(): Observable<User[]> {
         return this.http.get<User[]>(`${this.apiUrl}/users`);
@@ -39,7 +40,9 @@ export class AdminService {
     getReports(): Observable<Report[]> {
         return this.http.get<Report[]>(`${this.apiUrl}/reports`);
     }
-
+    getPosts() {
+        return this.postService.getAllPosts();
+    }
     banUser(id: number): Observable<void> {
         return this.http.put<void>(`${this.apiUrl}/users/${id}/ban`, {});
     }

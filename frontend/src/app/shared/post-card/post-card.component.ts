@@ -14,12 +14,14 @@ import { CommentsComponent } from '../comments/comments';
 import { SecureMediaPipe } from '../secure-media.pipe';
 import { AuthService } from '../../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SecureMediaDirective } from '../../secure-media.directive';
 
 @Component({
   selector: 'app-post-card',
   standalone: true,
   imports: [
     CommonModule,
+    SecureMediaDirective ,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -27,11 +29,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     RouterModule,
     FormsModule,
     CommentsComponent,
-    SecureMediaPipe,
   ],
   template: `
     <mat-card class="post-card">
-      <mat-card-header>
+      <mat-card-header  >
         <div
           mat-card-avatar
           class="avatar-placeholder"
@@ -85,18 +86,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         } @if (post.mediaUrl) {
         <div class="media-container">
           @if (post.mediaType === 'VIDEO') {
-          <video
-            [src]="post.mediaUrl | secureMedia"
-            controls
-            width="100%"
-            playsinline
-            preload="metadata"
-          >
+             <video
+              [secureMedia]="'http://localhost:8080/uploads/' + post.mediaUrl"
+               controls
+                width="100%"
+               playsinline
+                preload="metadata"
+                >
             Your browser does not support the video tag.
           </video>
           } @else {
           <img
-            [src]="post.mediaUrl | secureMedia"
+            [secureMedia]="'http://localhost:8080/uploads/' + post.mediaUrl"
             alt="Post media"
             style="width: 100%; border-radius: 8px;"
           />

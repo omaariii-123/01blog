@@ -9,6 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AdminService, Report, User } from '../admin.service';
+import { Post } from '../post.service';
 
 @Component({
   selector: 'app-admin',
@@ -31,6 +32,7 @@ import { AdminService, Report, User } from '../admin.service';
 export class AdminComponent implements OnInit {
   reports: Report[] = [];
   users: User[] = [];
+  posts: Post[] = [];
 
   totalUsers = 0;
   totalPosts = 0;
@@ -38,6 +40,7 @@ export class AdminComponent implements OnInit {
 
   reportColumns = ['id', 'reporter', 'reason', 'status', 'time', 'actions'];
   userColumns = ['username', 'role', 'actions'];
+  postColumns = ['id', 'author', 'content', 'status', 'time', 'actions'];
 
   private adminService = inject(AdminService);
 
@@ -60,6 +63,12 @@ export class AdminComponent implements OnInit {
         this.totalUsers = this.users.length;
       },
       error: (err) => console.error('Error loading users:', err),
+    });
+    this.adminService.getPosts().subscribe({
+      next : (posts) => {
+        this.posts = posts;
+      },
+      error : ()=>{},
     });
   }
 

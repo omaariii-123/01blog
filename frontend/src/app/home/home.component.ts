@@ -393,6 +393,7 @@ export class HomeComponent implements OnInit {
     if (!this.newPostContent().trim() && !this.selectedFile()) return;
     this.postService.createPost(this.newPostContent(), this.selectedFile() || undefined).subscribe({
       next: (post) => {
+        console.log(post.mediaUrl)
         const newPost: Post = { ...post, likeCount: 0, likedByCurrentUser: false, comments: [] };
         this.posts.update((posts) => [newPost, ...posts]);
         this.newPostContent.set('');
