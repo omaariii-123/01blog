@@ -3,11 +3,15 @@ package com.example.blog.service;
 import com.example.blog.dto.AuthenticationRequest;
 import com.example.blog.dto.AuthenticationResponse;
 import com.example.blog.dto.RegisterRequest;
+import com.example.blog.exception.ResourceAlreadyExistsException;
+import com.example.blog.exception.UnauthorizedException;
+import com.example.blog.exception.UserNotFoundException;
 import com.example.blog.model.Role;
 import com.example.blog.model.User;
 import com.example.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,14 +26,16 @@ public class AuthenticationService {
 
         public AuthenticationResponse register(RegisterRequest request) {
                 if (repository.existsByUsername(request.getUsername())) {
-                        throw new RuntimeException("Username already exists");
+                        throw new ResourceAlreadyExistsException();
                 }
+
                 var user = User.builder()
                                 .username(request.getUsername())
                                 .password(passwordEncoder.encode(request.getPassword()))
                                 .role(Role.USER)
                                 .build();
                 repository.save(user);
+
                 var jwtToken = jwtService.generateToken(java.util.Map.of("role", user.getRole().name()), user);
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
@@ -37,12 +43,19 @@ public class AuthenticationService {
         }
 
         public AuthenticationResponse authenticate(AuthenticationRequest request) {
-                authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                                request.getUsername(),
-                                                request.getPassword()));
+                try {
+                        authenticationManager.authenticate(
+                                        new UsernamePasswordAuthenticationToken(
+                                                        request.getUsername(),
+                                                        request.getPassword()));
+                } catch (BadCredentialsException e) {
+                        // Send a 401 Unauthorized back to Angular
+                        throw new UnauthorizedException("invalid Username or Password!");
+                }
+
                 var user = repository.findByUsername(request.getUsername())
-                                .orElseThrow();
+                                .orElseThrow(UserNotFoundException::new);
+
                 var jwtToken = jwtService.generateToken(java.util.Map.of("role", user.getRole().name()), user);
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)

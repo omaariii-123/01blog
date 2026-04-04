@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -29,12 +28,14 @@ public class Post {
     public Long getLikeCount() {
         return likeCount;
     }
+
     @Formula("(SELECT COUNT(*) FROM comments AS c WHERE c.post_id = id)")
     private Long commentCount;
 
     public Long getCommentCount() {
         return commentCount;
     }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
@@ -44,16 +45,19 @@ public class Post {
 
     private String mediaUrl;
     private String mediaType;
-    
+    @Column(nullable = false)
     @Builder.Default
     private Boolean hidden = false;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-@   OneToMany(mappedBy = "reportedPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "reportedPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Report> reports = new ArrayList<>();
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private java.util.List<Comment> comments = new java.util.ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private java.util.List<PostLike> likes = new java.util.ArrayList<>();
 }

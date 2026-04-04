@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -33,13 +34,14 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
-                .cors(Customizer.withDefaults())
+                                .cors(Customizer.withDefaults())
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(new AntPathRequestMatcher("/uploads/**")).permitAll()
-                                                .requestMatchers("/api/v1/auth/**", "/h2-console/**")
-                                                .permitAll()
+                                                .requestMatchers(new AntPathRequestMatcher("/uploads/**")).permitAll()
+                                                .requestMatchers("/api/v1/auth/**", "/h2-console/**").permitAll()
+                                                .requestMatchers("/error").permitAll()
                                                 .anyRequest().authenticated())
+
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authenticationProvider(authenticationProvider)
@@ -50,24 +52,25 @@ public class SecurityConfig {
 
                 return http.build();
         }
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    
-    // ALLOW YOUR ANGULAR PORT
-    configuration.setAllowedOrigins(List.of("*")); 
-    
-    // ALLOW METHODS
-    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    
-    // ALLOW HEADERS (Important for JWT)
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-    
-    // You can set this to false since you aren't using cookies
-    configuration.setAllowCredentials(false); 
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-}
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
+
+                // ALLOW YOUR ANGULAR PORT
+                configuration.setAllowedOrigins(List.of("*"));
+
+                // ALLOW METHODS
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+                // ALLOW HEADERS (Important for JWT)
+                configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+
+                // You can set this to false since you aren't using cookies
+                configuration.setAllowCredentials(false);
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
+        }
 }

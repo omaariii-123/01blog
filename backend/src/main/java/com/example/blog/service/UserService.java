@@ -1,5 +1,7 @@
 package com.example.blog.service;
 
+import com.example.blog.dto.UserDto;
+import com.example.blog.exception.UserNotFoundException;
 import com.example.blog.model.Notification;
 import com.example.blog.model.User;
 import com.example.blog.repository.NotificationRepository;
@@ -7,55 +9,52 @@ import com.example.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.example.blog.dto.UserDto;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final NotificationRepository notificationRepository;
 
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional
     public void followUser(Long targetUserId) {
         User currentUser = getCurrentUser();
         User targetUser = userRepository.findById(targetUserId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (currentUser.getId().equals(targetUser.getId())) {
-            throw new RuntimeException("Cannot follow yourself");
+            // Using ResponseStatusException here is good because it's a specific logic
+            // rule, not just a "Not Found"
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot follow yourself");
         }
 
         currentUser.getFollowing().add(targetUser);
         userRepository.save(currentUser);
 
-        // Notify target user about the new follower
         Notification notif = Notification.builder()
                 .user(targetUser)
-                .message(currentUser.getUsername() + " subscribed to your block!")
+                .message(currentUser.getUsername() + " subscribed to your blog!")
                 .read(false)
                 .build();
         notificationRepository.save(notif);
@@ -65,7 +64,7 @@ public class UserService {
     public void unfollowUser(Long targetUserId) {
         User currentUser = getCurrentUser();
         User targetUser = userRepository.findById(targetUserId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         currentUser.getFollowing().remove(targetUser);
         userRepository.save(currentUser);
@@ -91,8 +90,9 @@ public class UserService {
 
     public Page<UserDto> getSuggestedUsers(Pageable pageable) {
         User user = getCurrentUser();
-        List<Long> excluded = user.getFollowing().stream().map(u -> u.getId()).collect(Collectors.toList());
+        List<Long> excluded = user.getFollowing().stream().map(User::getId).collect(Collectors.toList());
         excluded.add(user.getId());
+
         return userRepository.findByIdNotIn(excluded, pageable)
                 .map(u -> new UserDto(u.getUsername(), u.getId(), u.getRole().toString()));
     }

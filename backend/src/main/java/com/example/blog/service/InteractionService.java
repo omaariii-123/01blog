@@ -2,6 +2,7 @@ package com.example.blog.service;
 
 import com.example.blog.dto.CommentRequest;
 import com.example.blog.dto.CommentResponse;
+import com.example.blog.exception.UserNotFoundException;
 import com.example.blog.model.Comment;
 import com.example.blog.model.Notification;
 import com.example.blog.model.Post;
@@ -11,10 +12,7 @@ import com.example.blog.repository.CommentRepository;
 import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.PostLikeRepository;
 import com.example.blog.repository.PostRepository;
-import com.example.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,19 +27,20 @@ public class InteractionService {
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
 
-    private User getCurrentUser() {
-        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUsername();
-        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+    // Inject UserService instead of UserRepository
+    private final UserService userService;
+
+    private Post getPost(long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new UserNotFoundException("Post not found !"));
     }
 
     @Transactional
     public CommentResponse addComment(Long postId, CommentRequest request) {
-        User user = getCurrentUser();
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        User user = userService.getCurrentUser();
+        Post post = getPost(postId);
 
         Comment comment = Comment.builder()
                 .author(user)
@@ -51,7 +50,6 @@ public class InteractionService {
 
         comment = commentRepository.save(comment);
 
-        // Notify post author if someone else commented
         if (!post.getAuthor().getId().equals(user.getId())) {
             Notification notif = Notification.builder()
                     .user(post.getAuthor())
@@ -61,34 +59,23 @@ public class InteractionService {
             notificationRepository.save(notif);
         }
 
-        return CommentResponse.builder()
-                .id(comment.getId())
-                .postId(post.getId())
-                .author(user.getUsername())
-                .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
-                .build();
+        return mapToCommentResponse(comment, post.getId());
     }
 
     public List<CommentResponse> getComments(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = getPost(postId);
         return commentRepository.findByPostOrderByCreatedAtAsc(post).stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        .postId(post.getId())
-                        .author(comment.getAuthor().getUsername())
-                        .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt())
-                        .build())
+                .map(comment -> mapToCommentResponse(comment, post.getId()))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public void toggleLike(Long postId) {
-        User user = getCurrentUser();
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        User user = userService.getCurrentUser();
+        Post post = getPost(postId);
 
         Optional<PostLike> existingLike = postLikeRepository.findByPostAndUser(post, user);
+
         if (existingLike.isPresent()) {
             postLikeRepository.delete(existingLike.get());
         } else {
@@ -98,7 +85,6 @@ public class InteractionService {
                     .build();
             postLikeRepository.save(like);
 
-            // Notify post author if someone else liked it
             if (!post.getAuthor().getId().equals(user.getId())) {
                 Notification notif = Notification.builder()
                         .user(post.getAuthor())
@@ -111,7 +97,17 @@ public class InteractionService {
     }
 
     public long getLikeCount(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = getPost(postId);
         return postLikeRepository.countByPost(post);
+    }
+
+    private CommentResponse mapToCommentResponse(Comment comment, Long postId) {
+        return CommentResponse.builder()
+                .id(comment.getId())
+                .postId(postId)
+                .author(comment.getAuthor().getUsername())
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .build();
     }
 }

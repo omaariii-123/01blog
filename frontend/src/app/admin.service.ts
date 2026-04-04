@@ -9,14 +9,20 @@ export interface User {
     role: 'USER' | 'ADMIN';
     banned: boolean;
 }
-
 export interface Report {
     id: number;
-    reporter?: User;
-    reportedUser?: User;
-    reportedPost?: Post;
     reason: string;
     createdAt: string;
+    
+    // Flat fields from the Backend ReportResponse
+    reporterId: number;
+    reporterUsername: string;
+    
+    reportedUserId?: number;
+    reportedUsername?: string;
+    
+    reportedPostId?: number;
+    reportedPostContent?: string;
 }
 
 @Injectable({

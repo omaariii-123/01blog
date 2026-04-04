@@ -174,72 +174,83 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
   styles: [
     `
       .profile-container {
-        background-color: var(--bg-color);
+        background-color: var(--bg-color, #ffffff);
         min-height: 100vh;
       }
 
       .profile-banner {
-        height: 250px;
-        background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+        height: 200px; /* Slightly shorter banner looks more modern */
+        background: linear-gradient(
+          120deg,
+          var(--primary-color, #3f51b5),
+          var(--secondary-color, #ff4081)
+        );
         position: relative;
       }
 
       .banner-overlay {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: rgba(0, 0, 0, 0.1);
       }
 
+      /* Flexbox alignment here fixes the centering issues completely */
       .profile-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         max-width: 900px;
-        margin: 0 auto;
+        margin: -48px auto 0; /* Pulls the avatar cleanly up into the banner */
         padding: 0 20px;
-        position: relative;
-        text-align: center;
-        margin-top: -60px;
-      }
-
-      .avatar-container {
-        display: inline-block;
-        padding: 4px;
-        background: var(--bg-color);
-        border-radius: 50%;
         position: relative;
         z-index: 2;
       }
 
+      .avatar-container {
+        padding: 4px;
+        background: var(--bg-color, #ffffff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Standardized, cleaner icon size */
       .profile-avatar {
-        width: 120px;
-        height: 120px;
+        width: 96px;
+        height: 96px;
         border-radius: 50%;
         background-color: #ddd;
         background-size: cover;
-        border: 4px solid white;
+        background-position: center;
       }
 
       .profile-info {
-        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 12px;
+        width: 100%;
       }
 
       .profile-info h1 {
         margin: 0;
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 700;
-        color: var(--text-primary);
+        color: var(--text-primary, #333);
       }
 
       .bio {
-        color: var(--text-secondary);
+        color: var(--text-secondary, #666);
         margin: 8px 0 16px;
+        text-align: center;
+        max-width: 400px;
       }
 
       .stats-row {
         display: flex;
         justify-content: center;
-        gap: 32px;
+        gap: 40px;
         margin-bottom: 24px;
       }
 
@@ -251,13 +262,13 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
 
       .stat-item .count {
         font-weight: 700;
-        font-size: 1.2rem;
-        color: var(--text-primary);
+        font-size: 1.25rem;
+        color: var(--text-primary, #333);
       }
 
       .stat-item .label {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
+        font-size: 0.8rem;
+        color: var(--text-secondary, #666);
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
@@ -265,8 +276,9 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
       .profile-actions {
         display: flex;
         justify-content: center;
+        align-items: center;
         gap: 12px;
-        margin-bottom: 32px;
+        margin-bottom: 24px;
       }
 
       .profile-content {
@@ -280,7 +292,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
 
       .media-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 16px;
       }
 
@@ -309,9 +321,10 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
 
       .skill-tag {
         background: #e0e0e0;
-        padding: 4px 12px;
+        padding: 6px 14px;
         border-radius: 16px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        font-weight: 500;
       }
 
       .mt-4 {
@@ -320,8 +333,8 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
 
       .empty-state {
         text-align: center;
-        padding: 40px;
-        color: var(--text-secondary);
+        padding: 60px 20px;
+        color: var(--text-secondary, #666);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -331,7 +344,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         font-size: 48px;
         width: 48px;
         height: 48px;
-        opacity: 0.5;
+        opacity: 0.3;
         margin-bottom: 16px;
       }
 
@@ -351,7 +364,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         font-family: inherit;
         font-size: 1rem;
         background: transparent;
-        color: var(--text-primary);
+        color: var(--text-primary, #333);
       }
       .create-post-input:focus {
         outline: none;
@@ -371,9 +384,8 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         }
 
         .profile-avatar {
-          width: 90px;
-          height: 90px;
-          border-width: 3px;
+          width: 80px;
+          height: 80px;
         }
 
         .profile-info h1 {
@@ -381,7 +393,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         }
 
         .stats-row {
-          gap: 16px;
+          gap: 24px;
         }
 
         .media-grid {
@@ -449,6 +461,7 @@ export class BlockComponent implements OnInit {
           .subscribe((count: number) => (this.followingCount = count));
 
         if (!this.isOwner && this.authService.currentUser()) {
+          // Syncs perfectly with your UserService now
           this.userService
             .isFollowing(profile.id)
             .subscribe((res: { isFollowing: boolean }) => (this.isFollowing = res.isFollowing));
@@ -460,6 +473,7 @@ export class BlockComponent implements OnInit {
   createPost() {
     if (!this.newPostText.trim()) return;
 
+    // Matches your PostService (which converts this string into FormData)
     this.postService.createPost(this.newPostText).subscribe({
       next: (createdPost: Post) => {
         const newPost: Post = {
@@ -472,7 +486,9 @@ export class BlockComponent implements OnInit {
         this.posts.update((currentPosts) => [newPost, ...currentPosts]);
         this.newPostText = '';
       },
-      error: (e: any) => console.error('Error creating post', e),
+      error: (err: any) => {
+        alert(err.error?.message || 'Error creating post');
+      },
     });
   }
 
@@ -484,14 +500,20 @@ export class BlockComponent implements OnInit {
     if (!this.userProfile) return;
 
     if (this.isFollowing) {
-      this.userService.unfollowUser(this.userProfile.id).subscribe(() => {
-        this.isFollowing = false;
-        this.followersCount--;
+      this.userService.unfollowUser(this.userProfile.id).subscribe({
+        next: () => {
+          this.isFollowing = false;
+          this.followersCount--;
+        },
+        error: (err) => alert(err.error?.message || 'Failed to unfollow'),
       });
     } else {
-      this.userService.followUser(this.userProfile.id).subscribe(() => {
-        this.isFollowing = true;
-        this.followersCount++;
+      this.userService.followUser(this.userProfile.id).subscribe({
+        next: () => {
+          this.isFollowing = true;
+          this.followersCount++;
+        },
+        error: (err) => alert(err.error?.message || 'Failed to follow'),
       });
     }
   }
@@ -508,7 +530,7 @@ export class BlockComponent implements OnInit {
       if (result) {
         this.adminService.createReport(this.userProfile.id, null, result).subscribe({
           next: () => alert('Report submitted successfully.'),
-          error: () => alert('Failed to submit report.'),
+          error: (err) => alert(err.error?.message || 'Failed to submit report.'),
         });
       }
     });

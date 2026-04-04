@@ -1,18 +1,26 @@
 import {
-  SharedResizeObserver
-} from "./chunk-RIPEY37C.js";
+  MAT_RIPPLE_GLOBAL_OPTIONS,
+  MatRipple,
+  _StructuralStylesLoader
+} from "./chunk-QOIADF5G.js";
 import {
   CdkPortal,
   CdkPortalOutlet,
   TemplatePortal
-} from "./chunk-YLXYDPH2.js";
+} from "./chunk-KE7TAXZ3.js";
 import {
-  MAT_RIPPLE_GLOBAL_OPTIONS,
-  MatRipple,
-  _StructuralStylesLoader
-} from "./chunk-D3IIREGP.js";
+  SharedResizeObserver
+} from "./chunk-EHEA6LR2.js";
+import "./chunk-WMA2BKHT.js";
+import "./chunk-VON75VBJ.js";
+import "./chunk-42QFQP6S.js";
+import {
+  CdkScrollable,
+  ViewportRuler
+} from "./chunk-5AWFYKCU.js";
+import "./chunk-AMCQLQUP.js";
+import "./chunk-GUGIMSVJ.js";
 import "./chunk-NGX5KMVR.js";
-import "./chunk-TX4HTQZW.js";
 import {
   CdkMonitorFocus,
   CdkObserveContent,
@@ -22,34 +30,26 @@ import {
   SPACE,
   _IdGenerator,
   hasModifierKey
-} from "./chunk-BGEWATD3.js";
+} from "./chunk-CTVYJIUJ.js";
+import "./chunk-XA6252L2.js";
 import {
   _animationsDisabled
-} from "./chunk-DJQRI7AR.js";
-import "./chunk-VON75VBJ.js";
-import "./chunk-XA6252L2.js";
-import "./chunk-42QFQP6S.js";
+} from "./chunk-S5BZODZZ.js";
 import "./chunk-N4DOILP3.js";
-import "./chunk-FVX3JGJO.js";
+import "./chunk-7CQZP5LD.js";
 import {
   _CdkPrivateStyleLoader
-} from "./chunk-BSL5DBY7.js";
-import {
-  CdkScrollable,
-  ViewportRuler
-} from "./chunk-D5N47NTJ.js";
-import "./chunk-WR2YPTVN.js";
-import "./chunk-GUGIMSVJ.js";
+} from "./chunk-KL662VHK.js";
 import {
   Platform
-} from "./chunk-VDMFU5HR.js";
-import "./chunk-QCPFLWXP.js";
-import "./chunk-FDSNTGRI.js";
-import "./chunk-7YN2WATW.js";
+} from "./chunk-EYBIIEAO.js";
+import "./chunk-L2RB7CNT.js";
 import {
   BidiModule,
   Directionality
-} from "./chunk-2AH4GRVA.js";
+} from "./chunk-QLZPKLZQ.js";
+import "./chunk-2ERLL6LP.js";
+import "./chunk-VFUCG2SY.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -78,7 +78,6 @@ import {
   computed,
   forwardRef,
   inject,
-  merge,
   numberAttribute,
   setClassMetadata,
   signal,
@@ -121,7 +120,11 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate,
   ɵɵviewQuery
-} from "./chunk-QJBS7T37.js";
+} from "./chunk-2DL7UKTJ.js";
+import "./chunk-4YCCEXQQ.js";
+import {
+  merge
+} from "./chunk-J46EEYGT.js";
 import {
   BehaviorSubject,
   EMPTY,
@@ -136,8 +139,7 @@ import {
   switchMap,
   takeUntil,
   timer
-} from "./chunk-WOK2LXLU.js";
-import "./chunk-4FRP4S3T.js";
+} from "./chunk-U7EDC2PH.js";
 
 // node_modules/@angular/material/fesm2022/tabs.mjs
 var _c0 = ["*"];

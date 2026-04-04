@@ -20,6 +20,11 @@
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/RegisterRequest.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/ReportResponse.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/dto/UserDto.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/exception/BadRequestException.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/exception/ForbiddenActionException.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/exception/ResourceAlreadyExistsException.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/exception/UnauthorizedException.java
+/home/yomari/01blog/backend/src/main/java/com/example/blog/exception/UserNotFoundException.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Comment.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Notification.java
 /home/yomari/01blog/backend/src/main/java/com/example/blog/model/Post.java

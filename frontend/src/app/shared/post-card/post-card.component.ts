@@ -184,7 +184,14 @@ export class PostCardComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.adminService.createReport(null, this.post.id, result).subscribe({
-          next: () => alert('Report submitted'),
+          next: () => {
+            this.snackBar.open('Repport submitted!', 'Close', {
+              duration: 5000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['success-snackbar'],
+            });
+          },
           error: () => alert('Failed to report'),
         });
       }
@@ -194,13 +201,12 @@ export class PostCardComponent {
   onDelete() {
     if (confirm('Are you sure you want to delete this post?')) {
       this.postService.deletePost(this.post.id).subscribe({
-        next: () => this.deletedPost.emit(this.post),
-        error: (err) => {
-          this.snackBar.open(err.message, 'Close', {
+        next: () => {
+          this.snackBar.open('Post deleted !', 'Close', {
             duration: 5000,
             horizontalPosition: 'center',
             verticalPosition: 'bottom',
-            panelClass: ['error-snackbar'], // Optional: add CSS to make it red
+            panelClass: ['success-snackbar'],
           });
         },
       });

@@ -25,7 +25,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
-    
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -61,38 +61,43 @@ public class AdminService {
 
         reportRepository.save(reportBuilder.build());
     }
-    public List<ReportResponse> getAllReports() {
-    return reportRepository.findAll().stream()
-        .map(this::mapToReportResponse)
-        .collect(Collectors.toList());
-}
 
-private ReportResponse mapToReportResponse(Report report) {
-    return ReportResponse.builder()
-        .id(report.getId())
-        .reason(report.getReason())
-        .createdAt(report.getCreatedAt())
-        
-        // Safely extract Reporter info
-        .reporterId(report.getReporter().getId())
-        .reporterUsername(report.getReporter().getUsername())
-        
-        // Handle potential nulls (e.g., if reportedUser is null)
-        .reportedUserId(report.getReportedUser() != null ? report.getReportedUser().getId() : null)
-        .reportedUsername(report.getReportedUser() != null ? report.getReportedUser().getUsername() : null)
-        
-        .reportedPostId(report.getReportedPost() != null ? report.getReportedPost().getId() : null)
-        .hidden(report.getReportedPost().getHidden())
-        .build();
-}
-public void hidePost( Long id){
-    Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-    post.setHidden(true);
-    postRepository.save(post);
-}
-public void unHidePost( Long id){
-    Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-    post.setHidden(false);
-    postRepository.save(post);
-}
+    public List<ReportResponse> getAllReports() {
+        return reportRepository.findAll().stream()
+                .map(this::mapToReportResponse)
+                .collect(Collectors.toList());
+    }
+
+    private ReportResponse mapToReportResponse(Report report) {
+        return ReportResponse.builder()
+                .id(report.getId())
+                .reason(report.getReason())
+                .createdAt(report.getCreatedAt())
+
+                // Safely extract Reporter info
+                .reporterId(report.getReporter().getId())
+                .reporterUsername(report.getReporter().getUsername())
+
+                // Handle potential nulls (e.g., if reportedUser is null)
+                .reportedUserId(report.getReportedUser() != null ? report.getReportedUser().getId() : null)
+                .reportedUsername(report.getReportedUser() != null ? report.getReportedUser().getUsername() : null)
+
+                .reportedPostId(report.getReportedPost() != null ? report.getReportedPost().getId() : null)
+                .hidden(report.getReportedPost() != null && report.getReportedPost().getHidden() != null
+                        ? report.getReportedPost().getHidden()
+                        : null)
+                .build();
+    }
+
+    public void hidePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setHidden(true);
+        postRepository.save(post);
+    }   
+
+    public void unHidePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setHidden(false);
+        postRepository.save(post);
+    }
 }
