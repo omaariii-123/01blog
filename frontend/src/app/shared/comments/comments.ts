@@ -42,7 +42,14 @@ import { PostService, Comment } from '../../post.service';
         <div class="comment-item">
           <span class="comment-author">{{ comment.author }}</span>
           <span class="comment-content">{{ comment.content }}</span>
-          <button mat-button (click)="deleteComment(comment.id)"></button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="deleteComment(comment.id)"
+            matTooltip="Delete Comment"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
         }
       </div>
@@ -152,14 +159,14 @@ export class CommentsComponent {
     });
   }
   deleteComment(id: number) {
-    if (!confirm('Delete this comment?' + id)) return;
+    if (!confirm('Delete this comment?')) return;
 
     this.postService.deleteComment(id).subscribe({
       next: () => {
         this.commentDeleted.emit();
         this.comments.update((cmnts) => cmnts.filter((c) => c.id != id));
       },
-      error: () => alert('Failed to delete comment' + id),
+      error: () => alert('Failed to delete comment'),
     });
   }
 }

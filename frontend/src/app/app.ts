@@ -37,7 +37,6 @@ export class App implements OnInit, OnDestroy {
   ngOnInit() {
     this.refresh();
 
-    // Polling is fine for a junior project, just keep it clean
     this.pollInterval = setInterval(() => this.refresh(), 5000);
   }
 

@@ -23,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PostCardComponent } from '../shared/post-card/post-card.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../shared/report-dialog/report-dialog.component';
-import { SecureMediaPipe } from '../shared/secure-media.pipe';
+import { SecureMediaDirective } from '../secure-media.directive';
 
 @Component({
   selector: 'app-block',
@@ -39,7 +39,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
     RouterModule,
     PostCardComponent,
     MatDialogModule,
-    SecureMediaPipe,
+    SecureMediaDirective,
   ],
   template: `
     <div class="profile-container">
@@ -180,10 +180,10 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
           <mat-tab label="Media">
             <div class="tab-content media-grid">
               @for (post of mediaPosts; track post.id) {
-              <div class="media-item">
+              <div class="media-item" class="media-thumb">
                 @if (post.mediaType === 'VIDEO') {
                 <video
-                  [src]="post.mediaUrl | secureMedia"
+                  [secureMedia]="'http://localhost:8080/uploads/' + post.mediaUrl"
                   muted
                   autoplay
                   loop
@@ -191,7 +191,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
                   class="media-thumb"
                 ></video>
                 } @else {
-                <img [src]="post.mediaUrl | secureMedia" alt="Media" class="media-thumb" />
+                <img [secureMedia]="'http://localhost:8080/uploads/' + post.mediaUrl" alt="Media" />
                 }
               </div>
               } @empty {
@@ -207,7 +207,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
               <mat-card>
                 <mat-card-content>
                   <h3>Academic Background</h3>
-                  <p>Computer Science Student at Example University.</p>
+                  <p>Computer Science Student at ZONE01OUJDA </p>
 
                   <h3 class="mt-4">Skills</h3>
                   <div class="skills-list">

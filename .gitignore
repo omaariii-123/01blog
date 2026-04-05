@@ -1,0 +1,4 @@
+target/
+uploads/
+node_modules/
+*.log

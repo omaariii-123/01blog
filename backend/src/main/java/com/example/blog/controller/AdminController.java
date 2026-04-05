@@ -3,6 +3,8 @@ package com.example.blog.controller;
 import com.example.blog.dto.ReportResponse;
 import com.example.blog.model.Report;
 import com.example.blog.model.User;
+import com.example.blog.dto.UserDto;
+
 import com.example.blog.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class AdminController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
 

@@ -142,7 +142,7 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
-                .hidden(post.getHidden())
+                .hidden(post.isHidden())
                 .build();
     }
 }

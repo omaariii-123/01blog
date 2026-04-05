@@ -11,7 +11,6 @@ import { PostService, Post } from '../../post.service';
 import { AdminService } from '../../admin.service';
 import { ReportDialogComponent } from '../report-dialog/report-dialog.component';
 import { CommentsComponent } from '../comments/comments';
-import { SecureMediaPipe } from '../secure-media.pipe';
 import { AuthService } from '../../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SecureMediaDirective } from '../../secure-media.directive';
@@ -51,7 +50,7 @@ import { SecureMediaDirective } from '../../secure-media.directive';
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          @if (post.author === authService.currentUser()) {
+          @if (post.author === authService.currentUser() || authService.isAdmin() === true) {
           <button mat-menu-item (click)="startEdit()">
             <mat-icon>edit</mat-icon>
             <span>Edit Post</span>

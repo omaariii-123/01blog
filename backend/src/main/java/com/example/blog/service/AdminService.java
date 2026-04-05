@@ -1,10 +1,12 @@
 package com.example.blog.service;
 
 import com.example.blog.dto.ReportResponse;
+import com.example.blog.dto.UserDto;
 import com.example.blog.exception.UserNotFoundException;
 import com.example.blog.model.Post;
 import com.example.blog.model.Report;
 import com.example.blog.model.User;
+import com.example.blog.dto.UserDto;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.ReportRepository;
 import com.example.blog.repository.UserRepository;
@@ -17,7 +19,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,14 @@ public class AdminService {
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> UserDto.builder()
+                        .Id(user.getId())
+                        .username(user.getUsername())
+                        .role(user.getRole().name())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public void banUser(Long userId) {
@@ -67,12 +74,13 @@ public class AdminService {
                 .reason(reason);
 
         if (userId != null) {
-            User reportedUser = userRepository.findById(userId).orElseThrow();
+            User reportedUser = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
             reportBuilder.reportedUser(reportedUser);
         }
 
         if (postId != null) {
-            Post reportedPost = postRepository.findById(postId).orElseThrow();
+            Post reportedPost = postRepository.findById(postId)
+                    .orElseThrow(() -> new UserNotFoundException("Post not found!"));
             reportBuilder.reportedPost(reportedPost);
         }
 
@@ -100,9 +108,9 @@ public class AdminService {
                 .reportedUsername(report.getReportedUser() != null ? report.getReportedUser().getUsername() : null)
 
                 .reportedPostId(report.getReportedPost() != null ? report.getReportedPost().getId() : null)
-                .hidden(report.getReportedPost() != null && report.getReportedPost().getHidden() != null
-                        ? report.getReportedPost().getHidden()
-                        : null)
+                .hidden(report.getReportedPost() != null
+                        ? report.getReportedPost().isHidden()
+                        : false)
                 .build();
     }
 
