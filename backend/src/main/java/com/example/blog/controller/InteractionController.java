@@ -28,6 +28,12 @@ public class InteractionController {
         return ResponseEntity.ok(service.getComments(postId));
     }
 
+    @DeleteMapping("/comments/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        service.deleteComment(id);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/likes/{postId}")
     public ResponseEntity<Void> toggleLike(@PathVariable Long postId) {
         service.toggleLike(postId);

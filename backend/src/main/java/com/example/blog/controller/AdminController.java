@@ -53,17 +53,26 @@ public class AdminController {
         adminService.deletePost(id);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/users/{id}/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        adminService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/posts/hide/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> hidePost(@PathVariable Long id) {
         adminService.hidePost(id);
         return ResponseEntity.ok().build();
     }
+
     @PutMapping("/posts/unhide/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> unHidePost(@PathVariable Long id) {
         adminService.unHidePost(id);
         return ResponseEntity.ok().build();
     }
-    
+
 }

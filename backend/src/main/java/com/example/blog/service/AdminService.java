@@ -1,6 +1,7 @@
 package com.example.blog.service;
 
 import com.example.blog.dto.ReportResponse;
+import com.example.blog.exception.UserNotFoundException;
 import com.example.blog.model.Post;
 import com.example.blog.model.Report;
 import com.example.blog.model.User;
@@ -12,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +34,7 @@ public class AdminService {
     }
 
     public void banUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.setBanned(!user.isBanned());
         userRepository.save(user);
     }
@@ -40,10 +43,24 @@ public class AdminService {
         postRepository.deleteById(postId);
     }
 
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.getFollowing().forEach(followedUser -> followedUser.getFollowers().remove(user));
+        user.getFollowers().forEach(follower -> follower.getFollowing().remove(user));
+
+        user.getFollowing().clear();
+        user.getFollowers().clear();
+
+        userRepository.save(user);
+        userRepository.delete(user);
+    }
+
     public void createReport(Long userId, Long postId, String reason) {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUsername();
-        User reporter = userRepository.findByUsername(username).orElseThrow();
+        User reporter = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
         Report.ReportBuilder reportBuilder = Report.builder()
                 .reporter(reporter)
@@ -90,13 +107,13 @@ public class AdminService {
     }
 
     public void hidePost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Post not found"));
         post.setHidden(true);
         postRepository.save(post);
-    }   
+    }
 
     public void unHidePost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Post not found"));
         post.setHidden(false);
         postRepository.save(post);
     }

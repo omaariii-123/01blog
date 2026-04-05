@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PostService, Post } from '../../post.service';
 import { AdminService } from '../../admin.service';
@@ -21,7 +21,7 @@ import { SecureMediaDirective } from '../../secure-media.directive';
   standalone: true,
   imports: [
     CommonModule,
-    SecureMediaDirective ,
+    SecureMediaDirective,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -32,7 +32,7 @@ import { SecureMediaDirective } from '../../secure-media.directive';
   ],
   template: `
     <mat-card class="post-card">
-      <mat-card-header  >
+      <mat-card-header>
         <div
           mat-card-avatar
           class="avatar-placeholder"
@@ -56,14 +56,14 @@ import { SecureMediaDirective } from '../../secure-media.directive';
             <mat-icon>edit</mat-icon>
             <span>Edit Post</span>
           </button>
+          <button mat-menu-item (click)="onDelete()">
+            <mat-icon>delete</mat-icon>
+            <span>Delete Post</span>
+          </button>
           }
           <button mat-menu-item (click)="onReport()">
             <mat-icon>flag</mat-icon>
             <span>Report Post</span>
-          </button>
-          <button mat-menu-item (click)="onDelete()">
-            <mat-icon>delete</mat-icon>
-            <span>Delete Post</span>
           </button>
         </mat-menu>
       </mat-card-header>
@@ -86,13 +86,13 @@ import { SecureMediaDirective } from '../../secure-media.directive';
         } @if (post.mediaUrl) {
         <div class="media-container">
           @if (post.mediaType === 'VIDEO') {
-             <video
-              [secureMedia]="'http://localhost:8080/uploads/' + post.mediaUrl"
-               controls
-                width="100%"
-               playsinline
-                preload="metadata"
-                >
+          <video
+            [secureMedia]="'http://localhost:8080/uploads/' + post.mediaUrl"
+            controls
+            width="100%"
+            playsinline
+            preload="metadata"
+          >
             Your browser does not support the video tag.
           </video>
           } @else {
@@ -124,7 +124,11 @@ import { SecureMediaDirective } from '../../secure-media.directive';
       </mat-card-actions>
 
       @if (showComments()) {
-      <app-comments [postId]="post.id" (commentAdded)="post.commentCount = post.commentCount + 1">
+      <app-comments
+        [postId]="post.id"
+        (commentAdded)="post.commentCount = post.commentCount + 1"
+        (commentDeleted)="post.commentCount = post.commentCount - 1"
+      >
       </app-comments>
       }
     </mat-card>
@@ -193,7 +197,13 @@ export class PostCardComponent {
               panelClass: ['success-snackbar'],
             });
           },
-          error: () => alert('Failed to report'),
+          error: () =>
+            this.snackBar.open('faild to Report!', 'Close', {
+              duration: 5000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['error-snackbar'],
+            }),
         });
       }
     });
@@ -203,11 +213,18 @@ export class PostCardComponent {
     if (confirm('Are you sure you want to delete this post?')) {
       this.postService.deletePost(this.post.id).subscribe({
         next: () => {
+          this.deletedPost.emit(this.post);
           this.snackBar.open('Post deleted !', 'Close', {
             duration: 5000,
             horizontalPosition: 'center',
             verticalPosition: 'bottom',
             panelClass: ['success-snackbar'],
+          });
+        },
+        error: (err) => {
+          this.snackBar.open('Failed to delete post.', 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
           });
         },
       });

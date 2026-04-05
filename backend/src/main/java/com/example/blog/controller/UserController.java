@@ -18,14 +18,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserProfile(@PathVariable String username) {
-        // Return user info, ideally a DTO to avoid recursion/exposing password
-        // For simple check we assume Entity is handled or Jackson ignore on recursive
-        // fields
-        // But User entity has LAZY collections which might cause issues or infinite
-        // loop if serialized directly
-        // Better to return simple View
-        return ResponseEntity.ok(userService.getUserByUsername(username));
+    public ResponseEntity<UserDto> getUserProfile(@PathVariable String username) {
+        User usr = userService.getUserByUsername(username);
+        return ResponseEntity.ok(new UserDto(usr.getUsername(), usr.getId(), usr.getRole().name()));
     }
 
     @PostMapping("/{id}/follow")

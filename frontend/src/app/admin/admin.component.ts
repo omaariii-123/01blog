@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { RouterModule } from '@angular/router'; // Crucial for clickable links
+import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,13 +30,14 @@ import { Post } from '../post.service';
   styleUrl: `./admin.component.css`,
 })
 export class AdminComponent implements OnInit {
-  reports: Report[] = [];
-  users: User[] = [];
-  posts: Post[] = [];
+  reports = signal<Report[]>([]);
+  users = signal<User[]>([]);
+  posts = signal<Post[]>([]);
 
-  totalUsers = 0;
-  totalPosts = 0;
-  pendingReports = 0;
+  // These will automatically recalculate anytime the arrays change
+  totalUsers = computed(() => this.users().length);
+  totalPosts = computed(() => this.posts().length);
+  pendingReports = computed(() => this.reports().length);
 
   reportColumns = ['id', 'reporter', 'reason', 'status', 'time', 'actions'];
   userColumns = ['username', 'role', 'actions'];
@@ -50,34 +51,24 @@ export class AdminComponent implements OnInit {
 
   loadDashboardData() {
     this.adminService.getReports().subscribe({
-      next: (reports) => {
-        this.reports = reports || [];
-        this.pendingReports = this.reports.length;
-      },
+      next: (data) => this.reports.set(data || []),
       error: (err) => console.error('Error loading reports:', err),
     });
 
     this.adminService.getUsers().subscribe({
-      next: (users) => {
-        this.users = users || [];
-        this.totalUsers = this.users.length;
-      },
+      next: (data) => this.users.set(data || []),
       error: (err) => console.error('Error loading users:', err),
     });
+
     this.adminService.getPosts().subscribe({
-      next : (posts) => {
-        this.posts = posts;
-      },
-      error : ()=>{},
+      next: (data) => this.posts.set(data || []),
+      error: () => {},
     });
   }
 
   resolveReport(report: Report) {
     if (!confirm('Are you sure you want to dismiss this report?')) return;
-
-    // Remove it from the table UI
-    this.reports = this.reports.filter((r) => r.id !== report.id);
-    this.pendingReports = this.reports.length;
+    this.reports.update((current) => current.filter((r) => r.id !== report.id));
   }
 
   banEntity(report: Report) {
@@ -86,21 +77,21 @@ export class AdminComponent implements OnInit {
     if (report.reportedUserId) {
       this.adminService.banUser(report.reportedUserId).subscribe({
         next: () => {
-          // Update the users table if they are on the same page
-          const userInList = this.users.find((u) => u.id === report.reportedUserId);
-          if (userInList) userInList.banned = true;
-
-          this.resolveReport(report); // Clear it from reports list
+          this.users.update((current) =>
+            current.map((u) => (u.id === report.reportedUserId ? { ...u, banned: true } : u))
+          );
+          this.resolveReport(report);
         },
-        error: (err) => alert('Failed to ban user'),
+        error: () => alert('Failed to ban user'),
       });
     } else if (report.reportedPostId) {
       this.adminService.deletePost(report.reportedPostId).subscribe({
         next: () => {
-          this.reports = this.reports.filter((r) => r.reportedPostId !== report.reportedPostId);
-          this.pendingReports = this.reports.length;
+          this.reports.update((current) =>
+            current.filter((r) => r.reportedPostId !== report.reportedPostId)
+          );
         },
-        error: (err) => alert('Failed to delete post'),
+        error: () => alert('Failed to delete post'),
       });
     }
   }
@@ -109,37 +100,79 @@ export class AdminComponent implements OnInit {
     if (!confirm(`Are you sure you want to ${user.banned ? 'unban' : 'ban'} this user?`)) return;
     this.adminService.banUser(user.id).subscribe({
       next: () => {
-        user.banned = !user.banned;
+        this.users.update((current) =>
+          current.map((u) => (u.id === user.id ? { ...u, banned: !u.banned } : u))
+        );
       },
-      error: (err) => alert('Failed to change ban status'),
+      error: () => alert('Failed to change ban status'),
     });
   }
 
-  hidePost(reportedPostId: number) {
-    if (!confirm('Are you sure you want to hide this post?')) return;
-    this.adminService.hidePost(reportedPostId).subscribe({
-      next: () => console.log('Post hidden!'),
-      error: (err) => alert('Failed to hide post'),
+  togglePostVisibility(post: Post, event: any) {
+    const action = post.hidden ? 'unhide' : 'hide';
+
+    // 1. If they cancel the popup, force the toggle to snap back
+    if (!confirm(`Are you sure you want to ${action} this post?`)) {
+      event.source.checked = post.hidden;
+      return;
+    }
+
+    // 2. If it is currently hidden, Unhide it
+    if (post.hidden) {
+      this.adminService.unHidePost(post.id).subscribe({
+        next: () => {
+          this.posts.update((current) =>
+            current.map((p) => (p.id === post.id ? { ...p, hidden: false } : p))
+          );
+        },
+        error: () => {
+          alert('Failed to unhide post');
+          event.source.checked = post.hidden; // Snap back if backend fails
+        },
+      });
+    }
+    // 3. If it is currently visible, Hide it
+    else {
+      this.adminService.hidePost(post.id).subscribe({
+        next: () => {
+          this.posts.update((current) =>
+            current.map((p) => (p.id === post.id ? { ...p, hidden: true } : p))
+          );
+        },
+        error: () => {
+          alert('Failed to hide post');
+          event.source.checked = post.hidden; // Snap back if backend fails
+        },
+      });
+    }
+  }
+  deleteUser(id: number) {
+    if (!confirm('Are you sure you want to permanently delete this user? This cannot be undone.'))
+      return;
+
+    this.adminService.deleteUser(id).subscribe({
+      next: () => {
+        // Remove the user from the table
+        this.users.update((current) => current.filter((u) => u.id !== id));
+
+        // Clear any pending reports associated with this deleted user
+        this.reports.update((current) =>
+          current.filter((r) => r.reportedUserId !== id && r.reporterId !== id)
+        );
+      },
+      error: () => alert('Failed to delete user. They might have dependent records.'),
     });
   }
-
-  unHidePost(reportedPostId: number) {
-    if (!confirm('Are you sure you want to unhide this post?')) return;
-    this.adminService.unHidePost(reportedPostId).subscribe({
-      next: () => console.log('Post unhidden!'),
-      error: (err) => alert('Failed to unhide post'),
-    });
-  }
-
   deletePost(id: number) {
     if (!confirm('Are you sure you want to permanently delete this post?')) return;
     this.adminService.deletePost(id).subscribe({
       next: () => {
-        // Clear any reports associated with this deleted post
-        this.reports = this.reports.filter((r) => r.reportedPostId !== id);
-        this.pendingReports = this.reports.length;
+        // Remove the post from the posts array
+        this.posts.update((current) => current.filter((p) => p.id !== id));
+        // Also clear any reports tied to it
+        this.reports.update((current) => current.filter((r) => r.reportedPostId !== id));
       },
-      error: (err) => alert('Failed to delete post'),
+      error: () => alert('Failed to delete post'),
     });
   }
 }

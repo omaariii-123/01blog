@@ -1,4 +1,13 @@
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal,
+  ViewChild,
+  ElementRef,
+  Signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -34,6 +43,16 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
   ],
   template: `
     <div class="profile-container">
+      @if (userNotFound()) {
+      <div class="ghost-profile-state">
+        <mat-icon class="ghost-icon">person_off</mat-icon>
+        <h2>Profile Not Found</h2>
+        <p>
+          The user <strong>{{ username }}</strong> does not exist or has been deleted.
+        </p>
+        <button mat-raised-button color="primary" routerLink="/">Return to Feed</button>
+      </div>
+      } @else {
       <div class="profile-banner">
         <div class="banner-overlay"></div>
       </div>
@@ -98,15 +117,49 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
                     rows="3"
                   >
                   </textarea>
+
+                  @if (mediaPreviewUrl) {
+                  <div class="media-preview-container">
+                    @if (previewMediaType === 'VIDEO') {
+                    <video [src]="mediaPreviewUrl" controls class="media-preview"></video>
+                    } @else {
+                    <img [src]="mediaPreviewUrl" alt="Preview" class="media-preview" />
+                    }
+
+                    <button
+                      mat-mini-fab
+                      color="warn"
+                      class="remove-media-btn"
+                      (click)="removeMedia()"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                  }
+
                   <div class="create-actions">
-                    <button mat-icon-button color="primary" matTooltip="Attach Media">
+                    <input
+                      type="file"
+                      #fileInput
+                      (change)="onFileSelected($event)"
+                      accept="image/*,video/*"
+                      style="display: none;"
+                    />
+
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      matTooltip="Attach Media"
+                      (click)="fileInput.click()"
+                    >
                       <mat-icon>image</mat-icon>
                     </button>
                     <span class="spacer"></span>
+
                     <button
                       mat-raised-button
                       color="primary"
-                      [disabled]="!newPostText.trim()"
+                      [disabled]="!newPostText.trim() && !selectedFile()"
                       (click)="createPost()"
                     >
                       Post
@@ -169,6 +222,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
           </mat-tab>
         </mat-tab-group>
       </div>
+      }
     </div>
   `,
   styles: [
@@ -179,7 +233,7 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
       }
 
       .profile-banner {
-        height: 200px; /* Slightly shorter banner looks more modern */
+        height: 200px;
         background: linear-gradient(
           120deg,
           var(--primary-color, #3f51b5),
@@ -194,13 +248,12 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         background: rgba(0, 0, 0, 0.1);
       }
 
-      /* Flexbox alignment here fixes the centering issues completely */
       .profile-header {
         display: flex;
         flex-direction: column;
         align-items: center;
         max-width: 900px;
-        margin: -48px auto 0; /* Pulls the avatar cleanly up into the banner */
+        margin: -48px auto 0;
         padding: 0 20px;
         position: relative;
         z-index: 2;
@@ -215,7 +268,6 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         justify-content: center;
       }
 
-      /* Standardized, cleaner icon size */
       .profile-avatar {
         width: 96px;
         height: 96px;
@@ -378,6 +430,30 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
         flex: 1 1 auto;
       }
 
+      .media-preview-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 16px;
+        max-width: 100%;
+      }
+
+      .media-preview {
+        max-height: 300px;
+        max-width: 100%;
+        border-radius: 8px;
+        object-fit: contain;
+        background: var(--bg-color, #f9fafb);
+        border: 1px solid var(--border-color, #e5e7eb);
+      }
+
+      .remove-media-btn {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        transform: scale(0.85);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
       @media (max-width: 600px) {
         .profile-header {
           margin-top: -40px;
@@ -400,6 +476,35 @@ import { SecureMediaPipe } from '../shared/secure-media.pipe';
           grid-template-columns: repeat(2, 1fr);
         }
       }
+      .ghost-profile-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 60vh;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .ghost-icon {
+        font-size: 80px;
+        width: 80px;
+        height: 80px;
+        color: var(--text-secondary, #9ca3af);
+        margin-bottom: 16px;
+      }
+
+      .ghost-profile-state h2 {
+        font-size: 2rem;
+        color: var(--text-primary, #333);
+        margin: 0 0 8px 0;
+      }
+
+      .ghost-profile-state p {
+        color: var(--text-secondary, #666);
+        margin-bottom: 24px;
+        font-size: 1.1rem;
+      }
     `,
   ],
 })
@@ -411,8 +516,14 @@ export class BlockComponent implements OnInit {
   followersCount: number = 0;
   followingCount: number = 0;
   userProfile: any = null;
+  userNotFound = signal(false);
 
   newPostText: string = '';
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
+  selectedFile: WritableSignal<File | null> = signal(null);
+  mediaPreviewUrl: string | null = null;
+  previewMediaType: 'IMAGE' | 'VIDEO' | null = null;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -447,34 +558,67 @@ export class BlockComponent implements OnInit {
       next: (posts: Post[]) => {
         this.posts.set(posts);
       },
-      error: (e: any) => console.error(e),
+      error: () => {},
     });
 
-    this.userService.getUserProfile(this.username).subscribe((profile: any) => {
-      this.userProfile = profile;
-      if (profile) {
-        this.userService
-          .getFollowersCount(this.username)
-          .subscribe((count: number) => (this.followersCount = count));
-        this.userService
-          .getFollowingCount(this.username)
-          .subscribe((count: number) => (this.followingCount = count));
-
-        if (!this.isOwner && this.authService.currentUser()) {
-          // Syncs perfectly with your UserService now
-          this.userService
-            .isFollowing(profile.id)
-            .subscribe((res: { isFollowing: boolean }) => (this.isFollowing = res.isFollowing));
+    this.userService.getUserProfile(this.username).subscribe({
+      next: (profile: any) => {
+        this.userProfile = profile;
+        this.userNotFound.set(false);
+        this.loadProfile();
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.userNotFound.set(true);
         }
-      }
+      },
     });
   }
 
-  createPost() {
-    if (!this.newPostText.trim()) return;
+  loadProfile() {
+    this.userService
+      .getFollowersCount(this.username)
+      .subscribe((count: number) => (this.followersCount = count));
+    this.userService
+      .getFollowingCount(this.username)
+      .subscribe((count: number) => (this.followingCount = count));
 
-    // Matches your PostService (which converts this string into FormData)
-    this.postService.createPost(this.newPostText).subscribe({
+    if (!this.isOwner && this.authService.currentUser()) {
+      this.userService
+        .isFollowing(this.userProfile.id)
+        .subscribe((res: { isFollowing: boolean }) => (this.isFollowing = res.isFollowing));
+    }
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile.set(file);
+      this.previewMediaType = file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE';
+
+      if (this.mediaPreviewUrl) {
+        URL.revokeObjectURL(this.mediaPreviewUrl);
+      }
+      this.mediaPreviewUrl = URL.createObjectURL(file);
+    }
+  }
+
+  removeMedia() {
+    this.selectedFile.set(null);
+    this.previewMediaType = null;
+    if (this.mediaPreviewUrl) {
+      URL.revokeObjectURL(this.mediaPreviewUrl);
+      this.mediaPreviewUrl = null;
+    }
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  createPost() {
+    // Check if both text and file are empty
+    if (!this.newPostText.trim() && !this.selectedFile()) return;
+    this.postService.createPost(this.newPostText, this.selectedFile() || undefined).subscribe({
       next: (createdPost: Post) => {
         const newPost: Post = {
           ...createdPost,
@@ -484,11 +628,12 @@ export class BlockComponent implements OnInit {
           comments: createdPost.comments || [],
         };
         this.posts.update((currentPosts) => [newPost, ...currentPosts]);
+
+        // Reset the form
         this.newPostText = '';
+        this.removeMedia();
       },
-      error: (err: any) => {
-        alert(err.error?.message || 'Error creating post');
-      },
+      error: () => {},
     });
   }
 

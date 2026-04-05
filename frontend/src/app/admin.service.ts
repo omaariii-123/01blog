@@ -4,65 +4,69 @@ import { Observable } from 'rxjs';
 import { Post, PostService } from './post.service';
 
 export interface User {
-    id: number;
-    username: string;
-    role: 'USER' | 'ADMIN';
-    banned: boolean;
+  id: number;
+  username: string;
+  role: 'USER' | 'ADMIN';
+  banned: boolean;
 }
 export interface Report {
-    id: number;
-    reason: string;
-    createdAt: string;
-    
-    // Flat fields from the Backend ReportResponse
-    reporterId: number;
-    reporterUsername: string;
-    
-    reportedUserId?: number;
-    reportedUsername?: string;
-    
-    reportedPostId?: number;
-    reportedPostContent?: string;
+  id: number;
+  reason: string;
+  createdAt: string;
+
+  // Flat fields from the Backend ReportResponse
+  reporterId: number;
+  reporterUsername: string;
+
+  reportedUserId?: number;
+  reportedUsername?: string;
+
+  reportedPostId?: number;
+  reportedPostContent?: string;
 }
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService {
-    private apiUrl = 'http://localhost:8080/api/v1/admin';
-    private http = inject(HttpClient);
-    private postService = inject(PostService);
+  private apiUrl = 'http://localhost:8080/api/v1/admin';
+  private http = inject(HttpClient);
+  private postService = inject(PostService);
 
-    getUsers(): Observable<User[]> {
-        return this.http.get<User[]>(`${this.apiUrl}/users`);
-    }
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
 
-    getReports(): Observable<Report[]> {
-        return this.http.get<Report[]>(`${this.apiUrl}/reports`);
-    }
-    getPosts() {
-        return this.postService.getAllPosts();
-    }
-    banUser(id: number): Observable<void> {
-        return this.http.put<void>(`${this.apiUrl}/users/${id}/ban`, {});
-    }
+  getReports(): Observable<Report[]> {
+    return this.http.get<Report[]>(`${this.apiUrl}/reports`);
+  }
+  getPosts() {
+    return this.postService.getAllPosts();
+  }
+  banUser(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/users/${id}/ban`, {});
+  }
 
-    deletePost(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/posts/${id}`);
-    }
-    hidePost(id : number){
-         return this.http.put<Report>(`${this.apiUrl}/posts/hide/${id}`, {})
-    }
-    unHidePost(id : number){
-         return this.http.put<Report>(`${this.apiUrl}/posts/unhide/${id}`, {})
-    }
+  deletePost(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/posts/${id}`);
+  }
+  deleteUser(id: number) {
+    return this.http.delete(`${this.apiUrl}/users/${id}/delete`);
+  }
 
-    createReport(userId: number | null, postId: number | null, reason: string): Observable<void> {
-        const params: any = { reason };
-        if (userId) params.userId = userId;
-        if (postId) params.postId = postId;
+  hidePost(id: number) {
+    return this.http.put<Report>(`${this.apiUrl}/posts/hide/${id}`, {});
+  }
+  unHidePost(id: number) {
+    return this.http.put<Report>(`${this.apiUrl}/posts/unhide/${id}`, {});
+  }
 
-        // Pass params as query parameters since backend expects @RequestParam
-        return this.http.post<void>(`${this.apiUrl}/report`, {}, { params });
-    }
+  createReport(userId: number | null, postId: number | null, reason: string): Observable<void> {
+    const params: any = { reason };
+    if (userId) params.userId = userId;
+    if (postId) params.postId = postId;
+
+    // Pass params as query parameters since backend expects @RequestParam
+    return this.http.post<void>(`${this.apiUrl}/report`, {}, { params });
+  }
 }

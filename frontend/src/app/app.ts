@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -22,67 +22,43 @@ import { NotificationService, AppNotification } from './notification.service';
     MatIconModule,
     MatMenuModule,
     MatDividerModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App implements OnInit, OnDestroy {
-  authService = inject(AuthService);
-  notificationService = inject(NotificationService);
-  
-  notifications = signal<AppNotification[]>([]);
-  unreadCount = signal(0);
-  
+  // Services are public so they can be accessed directly in the HTML
+  public authService = inject(AuthService);
+  public notificationService = inject(NotificationService);
+
   private pollInterval: any;
 
   ngOnInit() {
-    // Initial check
-    this.checkNotifications();
+    this.refresh();
 
-    // Set up real-time polling every 3 seconds
-    this.pollInterval = setInterval(() => {
-      this.checkNotifications();
-    }, 3000);
+    // Polling is fine for a junior project, just keep it clean
+    this.pollInterval = setInterval(() => this.refresh(), 5000);
   }
 
   ngOnDestroy() {
-    if (this.pollInterval) {
-      clearInterval(this.pollInterval);
-    }
+    if (this.pollInterval) clearInterval(this.pollInterval);
   }
 
-  // Changed to public so the HTML template can call it safely
-  public checkNotifications() {
+  private refresh() {
     if (this.authService.isLoggedIn()) {
-      this.notificationService.getNotifications().subscribe({
-        next: (nots) => {
-          this.notifications.set(nots);
-          this.unreadCount.set(nots.filter(n => !n.read).length);
-        },
-        error: () => {
-          // Fail silently in the background so it doesn't spam the console if token expires
-        }
-      });
-    } else {
-      // Clear them out if the user logs out
-      this.notifications.set([]);
-      this.unreadCount.set(0);
+      // The service .tap() will update the signals automatically
+      this.notificationService.getNotifications().subscribe();
     }
-  }
-
-  // Force a load when they click the bell, just to be instantaneous
-  loadNotifications() {
-      this.checkNotifications();
   }
 
   markAsRead(id: number) {
-    this.notificationService.markAsRead(id).subscribe(() => this.checkNotifications());
+    this.notificationService.markAsRead(id).subscribe();
   }
 
   logout() {
     this.authService.logout();
-    this.notifications.set([]);
-    this.unreadCount.set(0);
+    // No need to manually clear signals here if the service handles it,
+    // but the next refresh() will fail and stop updates anyway.
   }
 }

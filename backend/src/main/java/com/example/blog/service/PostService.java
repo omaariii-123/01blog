@@ -116,7 +116,7 @@ public class PostService {
     public List<PostResponse> getUserPosts(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(UserNotFoundException::new);
-        return postRepository.findAllByAuthorOrderByCreatedAtDesc(user).stream()
+        return postRepository.findAllByAuthorAndHiddenFalseOrderByCreatedAtDesc(user).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -124,7 +124,8 @@ public class PostService {
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new UserNotFoundException("Post not found"));
 
-        if (!post.getAuthor().getUsername().equals(usersService.getCurrentUser().getUsername())) {
+        if (!post.getAuthor().getUsername().equals(usersService.getCurrentUser().getUsername())
+                && !usersService.getCurrentUser().getRole().name().equals("ADMIN")) {
             throw new ForbiddenActionException("You cannot delete a post you do not own.");
         }
 
@@ -141,6 +142,7 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
+                .hidden(post.getHidden())
                 .build();
     }
 }

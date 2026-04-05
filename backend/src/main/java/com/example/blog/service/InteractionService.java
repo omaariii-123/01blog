@@ -2,6 +2,7 @@ package com.example.blog.service;
 
 import com.example.blog.dto.CommentRequest;
 import com.example.blog.dto.CommentResponse;
+import com.example.blog.exception.ForbiddenActionException;
 import com.example.blog.exception.UserNotFoundException;
 import com.example.blog.model.Comment;
 import com.example.blog.model.Notification;
@@ -13,6 +14,7 @@ import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.PostLikeRepository;
 import com.example.blog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,5 +111,19 @@ public class InteractionService {
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .build();
+    }
+
+    public void deleteComment(Long id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Comment not found"));
+        String currentUsername = userService.getCurrentUser().getUsername();
+        boolean isAdmin = userService.getCurrentUser().getRole().name().equals("ADMIN");
+
+        // Check if the user owns the comment OR is an admin
+        if (comment.getAuthor().getUsername().equals(currentUsername) || isAdmin) {
+            commentRepository.delete(comment);
+        } else {
+            throw new ForbiddenActionException("You cannot delete this comment");
+        }
     }
 }

@@ -2,10 +2,14 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { inject } from '@angular/core'; // Gently corrected import path
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const snackBar = inject(MatSnackBar);
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -25,11 +29,13 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
         case 401:
           displayMessage =
             backendMessage || 'Unauthorized: Invalid credentials or your session expired.';
-          // todo: inject an AuthService here and trigger a logout!
+          authService.logout();
+          router.navigate(['/login']);
           break;
 
         case 403:
           displayMessage = backendMessage || 'Forbidden: You do not have permission to do this.';
+          router.navigate(['/']);
           break;
 
         case 404:

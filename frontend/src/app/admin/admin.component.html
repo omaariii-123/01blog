@@ -9,7 +9,7 @@
       <div class="stat-content">
         <mat-icon color="primary">people</mat-icon>
         <div class="stat-text">
-          <h2>{{ totalUsers }}</h2>
+          <h2>{{ totalUsers() }}</h2>
           <p>Total Users</p>
         </div>
       </div>
@@ -19,7 +19,7 @@
       <div class="stat-content">
         <mat-icon color="warn">flag</mat-icon>
         <div class="stat-text">
-          <h2>{{ pendingReports }}</h2>
+          <h2>{{ pendingReports()}}</h2>
           <p>Pending Reports</p>
         </div>
       </div>
@@ -29,9 +29,9 @@
   <mat-card class="table-card">
     <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms">
       
-      <mat-tab label="Reports ({{ pendingReports }})">
+      <mat-tab label="Reports ({{ pendingReports() }})">
         <div class="table-container">
-          <table mat-table [dataSource]="reports" class="admin-table">
+          <table mat-table [dataSource]="reports()" class="admin-table">
             
             <ng-container matColumnDef="id">
               <th mat-header-cell *matHeaderCellDef> ID </th>
@@ -41,7 +41,7 @@
             <ng-container matColumnDef="reporter">
               <th mat-header-cell *matHeaderCellDef> Reported By </th>
               <td mat-cell *matCellDef="let report">
-                <a [routerLink]="['/user', report.reporterUsername]" class="user-link">
+                <a [routerLink]="['/block', report.reporterUsername]" class="user-link">
                   <div class="small-avatar" 
                        [style.background-image]="'url(https://api.dicebear.com/9.x/initials/svg?seed=' + report.reporterUsername + ')'">
                   </div>
@@ -89,7 +89,7 @@
             <tr mat-row *matRowDef="let row; columns: reportColumns;"></tr>
           </table>
 
-          @if (reports.length === 0) {
+          @if (reports().length === 0) {
             <div class="empty-state">
               <mat-icon>verified</mat-icon>
               <p>No pending reports. All clear!</p>
@@ -100,12 +100,12 @@
 
       <mat-tab label="Manage Users">
         <div class="table-container">
-          <table mat-table [dataSource]="users" class="admin-table">
+          <table mat-table [dataSource]="users()" class="admin-table">
             
             <ng-container matColumnDef="username">
               <th mat-header-cell *matHeaderCellDef> User </th>
               <td mat-cell *matCellDef="let user">
-                <a [routerLink]="['/user', user.username]" class="user-link">
+                <a [routerLink]="['/block', user.username]" class="user-link">
                   <div class="small-avatar" 
                        [style.background-image]="'url(https://api.dicebear.com/9.x/initials/svg?seed=' + user.username + ')'">
                   </div>
@@ -138,6 +138,9 @@
                   matTooltip="Toggle Ban Status">
                   {{ user.banned ? 'Unban' : 'Ban' }}
                 </mat-slide-toggle>
+                <button mat-icon-button color="warn" matTooltip="Delete User permanently" (click)="deleteUser(user.id)" style="margin-left: 12px;">
+                  <mat-icon>delete</mat-icon>
+                </button>
               </td>
             </ng-container>
 
@@ -146,9 +149,10 @@
           </table>
         </div>
       </mat-tab>
+      
       <mat-tab label="Manage Posts">
         <div class="table-container">
-          <table mat-table [dataSource]="posts" class="admin-table">
+          <table mat-table [dataSource]="posts()" class="admin-table">
             
             <ng-container matColumnDef="id">
               <th mat-header-cell *matHeaderCellDef> ID </th>
@@ -158,12 +162,12 @@
             <ng-container matColumnDef="author">
               <th mat-header-cell *matHeaderCellDef> Author </th>
               <td mat-cell *matCellDef="let post">
-                <a [routerLink]="['/user', post.authorUsername || post.author?.username]" class="user-link">
+                <a [routerLink]="['/block', post.author]" class="user-link">
                   <div class="small-avatar" 
-                       [style.background-image]="'url(https://api.dicebear.com/9.x/initials/svg?seed=' + (post.authorUsername || post.author?.username) + ')'">
+                       [style.background-image]="'url(https://api.dicebear.com/9.x/initials/svg?seed=' + post.author + ')'">
                   </div>
                   <div class="user-details">
-                    <span class="username">{{ post.authorUsername || post.author?.username }}</span>
+                    <span class="username">{{ post.author }}</span>
                   </div>
                 </a>
               </td>
@@ -172,7 +176,9 @@
             <ng-container matColumnDef="content">
               <th mat-header-cell *matHeaderCellDef> Content </th>
               <td mat-cell *matCellDef="let post"> 
-                <span class="reason-chip">{{ post.content | slice:0:40 }}{{ post.content?.length > 40 ? '...' : '' }}</span>
+                <span class="reason-chip">
+                  {{ post.description | slice:0:40 }}{{ post.description?.length > 40 ? '...' : '' }}
+                </span>
               </td>
             </ng-container>
 
@@ -184,24 +190,25 @@
                 </span>
               </td>
             </ng-container>
-                <ng-container matColumnDef="time">
+            
+            <ng-container matColumnDef="time">
               <th mat-header-cell *matHeaderCellDef> Date </th>
               <td mat-cell *matCellDef="let post"> 
                 <span class="reason-chip">{{ post.createdAt | date:'shortDate' }}</span> 
               </td>
             </ng-container>
+            
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef class="actions-header"> Actions </th>
               <td mat-cell *matCellDef="let post" class="actions-cell">
                 
-                <mat-slide-toggle 
-                  [checked]="post.hidden" 
-                  color="warn"
-                  (change)="post.hidden ? unHidePost(post.id) : hidePost(post.id); post.hidden = !post.hidden"
-                  matTooltip="Toggle Visibility">
-                  {{ post.hidden ? 'Unhide' : 'Hide' }}
-                </mat-slide-toggle>
-
+               <mat-slide-toggle 
+                        [checked]="post.hidden" 
+                   color="warn"
+                               (change)="togglePostVisibility(post, $event)"
+                               matTooltip="Toggle Visibility">
+                             {{ post.hidden ? 'Unhide' : 'Hide' }}
+                      </mat-slide-toggle>
                 <button mat-icon-button color="warn" matTooltip="Delete Post permanently" (click)="deletePost(post.id)" style="margin-left: 12px;">
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -213,7 +220,7 @@
             <tr mat-row *matRowDef="let row; columns: postColumns;" [class.is-banned]="row.hidden"></tr>
           </table>
           
-          @if (posts.length === 0) {
+          @if (posts().length === 0) {
             <div class="empty-state">
               <mat-icon>post_add</mat-icon>
               <p>No posts found.</p>
